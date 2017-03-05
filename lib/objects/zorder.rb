@@ -1,0 +1,3 @@
+module ZOrder
+  BG, LEVEL, ITEMS, ENEMIES, PROJECTILES, PLAYER, DEBUG, UI, CURSOR = *(0..15)
+end

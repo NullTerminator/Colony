@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/main"
+
+game = Game::Game.instance
+game.show_fps = ARGV.include? "fps"
+game.debug = ARGV.include? "debug"
+game.show_objects = ARGV.include? "show_objects"
+
+Game::Window.instance.show
