@@ -1,5 +1,5 @@
+require_relative '../main'
 require_relative '../../ui/ui_object'
-require_relative '../../system/input'
 require_relative '../../window'
 
 require_relative '../level'
@@ -13,31 +13,32 @@ module Colony
 
       def initialize
         super(0, 0)
-        @width = Block::SIZE
-        @height = Block::SIZE
-        System::Input.instance.register(:mouse_move, self)
+        @width = @height = Block::SIZE
+        @color = Gosu::Color::WHITE
+      end
+
+      def left_clicked
+        if @block
+          Game.instance.events.trigger(:block_clicked, @block)
+        end
       end
 
       def on_mouse_move(mx, my, dx, dy)
+        super
+
         if @block = Level.instance.get_block_at(mx, my)
-          self.move_to(@block.x, @block.y)
+          move_to(@block.x, @block.y)
         end
       end
 
       def draw
-        if @block
+        if @block && @block.is_workable?
           window = System::Window.instance
-          window.rotate(angle, x, y) do
-            window.draw_line(left, top, color, right, top, color, ZOrder::DEBUG)
-            window.draw_line(right, top, color, right, bottom, color, ZOrder::DEBUG)
-            window.draw_line(right, bottom, color, left, bottom, color, ZOrder::DEBUG)
-            window.draw_line(left, bottom, color, left, top, color, ZOrder::DEBUG)
-          end
+          window.draw_line(left, top, color, right, top, color, z)
+          window.draw_line(right, top, color, right, bottom, color, z)
+          window.draw_line(right, bottom, color, left, bottom, color, z)
+          window.draw_line(left, bottom, color, left, top, color, z)
         end
-      end
-
-      def color
-        Gosu::Color::WHITE
       end
 
     end

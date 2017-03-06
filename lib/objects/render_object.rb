@@ -8,7 +8,7 @@ class RenderObject
                 :color, :visible
   alias :visible? :visible
 
-  def initialize(x, y, z, tex = nil, scale_x = 1.0, scale_y = 1.0, color = Gosu::Color::WHITE)
+  def initialize(x, y, z, tex = nil, scale_x = 1.0, scale_y = 1.0, color = Gosu::Color::FUCHSIA)
     @x, @y, @z = x, y, z
     @texture = tex
     @scale_x, @scale_y = scale_x, scale_y
@@ -22,18 +22,28 @@ class RenderObject
   end
 
   def draw
+    window = System::Window.instance
+
+    if visible?
+      if texture
+        texture.draw_rot(x, y, z, angle, 0.5, 0.5, scale_x, scale_y, color)
+      else
+        window.draw_quad(left, top, color,
+                         right, top, color,
+                         right, bottom, color,
+                         left, bottom, color,
+                         z)
+      end
+    end
+
     if Game.instance.debug
       dbc = Gosu::Color::WHITE
-      window = System::Window.instance
       window.rotate(angle, x, y) do
         window.draw_line(left, top, dbc, right, top, dbc, ZOrder::DEBUG)
         window.draw_line(right, top, dbc, right, bottom, dbc, ZOrder::DEBUG)
         window.draw_line(right, bottom, dbc, left, bottom, dbc, ZOrder::DEBUG)
         window.draw_line(left, bottom, dbc, left, top, dbc, ZOrder::DEBUG)
       end
-    end
-    if draw?
-      texture.draw_rot(x, y, z, angle, 0.5, 0.5, scale_x, scale_y, color)#_gl)
     end
   end
 
@@ -115,10 +125,6 @@ class RenderObject
   end
 
   private
-
-  def draw?
-    texture && visible
-  end
 
   def keep_on_screen
     window = System::Window.instance

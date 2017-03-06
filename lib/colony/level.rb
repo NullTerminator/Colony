@@ -16,6 +16,8 @@ module Colony
     WIDTH = Float(COLS * Block::SIZE)
     HEIGHT = Float(ROWS * Block::SIZE)
 
+    attr_reader :left, :right, :top, :bottom
+
     def initialize
       init_blocks
     end
@@ -28,22 +30,6 @@ module Colony
       end
     end
 
-    def left
-      @blocks[0][0].left
-    end
-
-    def right
-      @blocks[-1][-1].right
-    end
-
-    def top
-      @blocks[0][0].top
-    end
-
-    def bottom
-      @blocks[-1][-1].bottom
-    end
-
     def hit?(posx, posy)
       posx > left && posx < right && posy > top && posy < bottom
     end
@@ -53,17 +39,22 @@ module Colony
     def init_blocks
       @blocks = []
 
-      @x_start = (System::Window.instance.width * 0.5) - (WIDTH * 0.5)
-      @y_start = 20.0
+      @left = (System::Window.instance.width * 0.5) - (WIDTH * 0.5)
+      @right = left + COLS * Block::SIZE
+      @top = 10.0
+      @bottom = top + ROWS * Block::SIZE
 
       ROWS.times do |row_i|
         row = []
 
         COLS.times do |col_i|
-          x = @x_start + (col_i * Block::SIZE)
-          y = (@y_start * 0.5) + (row_i * Block::SIZE) + (Block::SIZE * 0.5)
+          x = left + (col_i * Block::SIZE) + (Block::SIZE * 0.5)
+          y = top + (row_i * Block::SIZE) + (Block::SIZE * 0.5)
 
           block = Block.new(x, y)
+          if row_i == 0
+            block.surfacify
+          end
           Game.instance.objects << block
           row << block
         end

@@ -16,8 +16,12 @@ module System
     end
 
     def trigger(event, *args)
-      if @events[event]
-        @events[event].each { |reg| reg.send("on_#{event}", *args) }
+      @events[event] && @events[event].each do |reg|
+        if reg.respond_to?(:call)
+          reg.call(*args)
+        else
+          reg.public_send("on_#{event}", *args)
+        end
       end
     end
   end

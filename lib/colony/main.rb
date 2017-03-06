@@ -9,8 +9,10 @@ require_relative "../system/input"
 require_relative "../ui/ui_manager"
 require_relative "../objects/zorder"
 
+require_relative 'use_cases'
 require_relative 'level'
 require_relative 'ui/block_selector'
+require_relative 'ui/work_tracker'
 
 class Game
   include Singleton
@@ -39,8 +41,10 @@ class Game
   end
 
   def init
+    Colony::UseCases.init
     Colony::Level.instance
     ui << Colony::Ui::BlockSelector.new
+    ui << Colony::Ui::WorkTracker.new
   end
 
   def update
