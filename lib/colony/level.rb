@@ -16,9 +16,12 @@ module Colony
     WIDTH = Float(COLS * Block::SIZE)
     HEIGHT = Float(ROWS * Block::SIZE)
 
-    attr_reader :left, :right, :top, :bottom
+    attr_reader :left, :right, :top, :bottom,
+      :width, :height
 
     def initialize
+      @width = COLS * Block::SIZE
+      @height = ROWS * Block::SIZE
       init_blocks
     end
 
@@ -40,9 +43,9 @@ module Colony
       @blocks = []
 
       @left = (System::Window.instance.width * 0.5) - (WIDTH * 0.5)
-      @right = left + COLS * Block::SIZE
+      @right = left + width
       @top = 10.0
-      @bottom = top + ROWS * Block::SIZE
+      @bottom = top + height
 
       ROWS.times do |row_i|
         row = []

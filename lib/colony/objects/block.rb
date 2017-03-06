@@ -16,11 +16,14 @@ module Colony
     state_machine do
 
       state :surface do
+        def top
+          y + height * 0.4
+        end
+
         def draw
-          draw_top = y + height * 0.4
           System::Window.instance
-            .draw_quad(left, draw_top, color,
-                       right, draw_top, color,
+            .draw_quad(left, top, color,
+                       right, top, color,
                        right, bottom, color,
                        left, bottom, color,
                        z)

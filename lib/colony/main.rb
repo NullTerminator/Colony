@@ -11,6 +11,7 @@ require_relative "../objects/zorder"
 
 require_relative 'use_cases'
 require_relative 'level'
+require_relative 'objects/ant'
 require_relative 'ui/block_selector'
 require_relative 'ui/work_tracker'
 
@@ -42,9 +43,15 @@ class Game
 
   def init
     Colony::UseCases.init
-    Colony::Level.instance
+    level = Colony::Level.instance
     ui << Colony::Ui::BlockSelector.new
     ui << Colony::Ui::WorkTracker.new
+    10.times do
+      a = Colony::Ant.new
+      a.y = 55
+      a.x = rand(level.width) + level.left
+      objects.add(a)
+    end
   end
 
   def update

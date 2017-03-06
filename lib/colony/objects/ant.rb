@@ -11,7 +11,7 @@ module Colony
       super
       @z = ZOrder::PLAYER
       @color = Gosu::Color::RED
-      @width = @height = 10
+      @width = @height = 7
       @speed = 7.0
     end
 
