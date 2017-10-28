@@ -13,7 +13,7 @@ GEM
     diff-lcs (1.2.5)
     ffi (1.9.6)
     formatador (0.2.5)
-    gosu (0.8.7.2)
+    gosu (0.12.1)
     guard (2.12.1)
       formatador (>= 0.2.4)
       listen (~> 2.7)

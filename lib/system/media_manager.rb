@@ -5,7 +5,6 @@ module System
     include Singleton
 
     def initialize
-      @win = Window.instance
       @images = load_images
       @animations = load_animations
       @sounds = load_sounds
@@ -17,7 +16,7 @@ module System
     end
 
     def image_from_text(*args)
-      Gosu::Image.from_text(@win, *args)
+      Gosu::Image.from_text(*args)
     end
 
     def animation(key)
@@ -35,7 +34,7 @@ module System
     def circle(radius)
       radius = radius.to_i
       if radius > 0
-        @images["circle_#{radius}".to_sym] ||= Gosu::Image.new(@win, Circle.new(radius), false)
+        @images["circle_#{radius}".to_sym] ||= Gosu::Image.new(Circle.new(radius), false)
       end
     end
 
@@ -61,40 +60,37 @@ module System
     end
 
     def load_images
-      def l(*args)
-        args[0] = "media/images/" + args[0]
-        Gosu::Image.new(@win, *args)
+      def l(source, options={})
+        Gosu::Image.new("media/images/#{source}", options)
       end
       {
         #Objects
-        player: l("Player.png", false),
-        bullet: l("Bullet.png", false),
-        seeker: l("Seeker.png", false),
-        wanderer: l("Wanderer.png", false),
+        #player: l("Player.png"),
+        #bullet: l("Bullet.png"),
+        #seeker: l("Seeker.png"),
+        #wanderer: l("Wanderer.png"),
 
-        background: l("Space.png", true),
+        #background: l("Space.png", tileable: true),
 
         #UI
-        load_btn_up: l("IntButtn.bmp", false, 132, 98, 32, 28),
-        load_btn_down: l("IntButtn.bmp", false, 169, 98, 32, 28)
+        #load_btn_up: l("IntButtn.bmp", tileable: false, rect: [132, 98, 32, 28]),
+        #load_btn_down: l("IntButtn.bmp", tileable: false, rect: [169, 98, 32, 28])
       }
     end
 
     def load_animations
-      def l(*args)
-        args[0] = "media/images/" + args[0]
-        frame_length = args.delete_at(-1)
-        [Gosu::Image.load_tiles(@win, *args), frame_length]
+      def l(source, width, height, frame_length, options={})
+        [Gosu::Image.load_tiles("media/images/#{source}", width, height), frame_length]
       end
       {
-        star: l("Star.png", -10, -1, false, 0.1),
+        star: l("Star.png", -10, -1, 0.1),
       }
     end
 
     def load_sounds
       def l(*args)
         args[0] = "media/sounds/" + args[0]
-        Gosu::Sample.new(@win, *args)
+        Gosu::Sample.new(*args)
       end
       {
         beep: l("Beep.wav")
@@ -102,8 +98,8 @@ module System
     end
 
     def load_fonts
-      def l(*args)
-        Gosu::Font.new(@win, *args)
+      def l(name, height)
+        Gosu::Font.new(height, name: name)
       end
       {
         default: l(Gosu::default_font_name, 18),

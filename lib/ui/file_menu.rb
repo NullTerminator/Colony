@@ -11,7 +11,7 @@ module Game
       end
 
       def menu_item_from_entry(entry)
-        b = Button.new x, y, MediaManager.instance.image_from_text(entry.display, "Menio", 25)
+        b = Button.new x, y, MediaManager.instance.image_from_text(entry.display, 25, font: "Menio")
         add b
 
         if entry.dir?
