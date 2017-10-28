@@ -11,7 +11,7 @@ module Colony
 
   class Block < RenderObject
 
-    SIZE = 50
+    SIZE = 30
 
     state_machine do
 
@@ -45,7 +45,7 @@ module Colony
         end
       end
 
-      event :dirtify do
+      event :fill do
         transition any => :dirt
       end
 
@@ -80,7 +80,7 @@ module Colony
     def initialize(x, y)
       super(x, y, ZOrder::LEVEL)
       @width = @height = SIZE
-      dirtify
+      fill
     end
 
   end

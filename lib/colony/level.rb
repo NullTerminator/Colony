@@ -11,8 +11,8 @@ module Colony
 
     include Singleton
 
-    ROWS = 20
-    COLS = 30
+    ROWS = (1000 / Block::SIZE).to_i
+    COLS = (1500 / Block::SIZE).to_i
     WIDTH = Float(COLS * Block::SIZE)
     HEIGHT = Float(ROWS * Block::SIZE)
 
