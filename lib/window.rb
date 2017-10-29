@@ -31,11 +31,11 @@ module System
     end
 
     def width
-      Float(super)
+      super.to_f
     end
 
     def height
-      Float(super)
+      super.to_f
     end
   end
 end
