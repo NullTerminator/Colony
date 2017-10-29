@@ -63,13 +63,25 @@ class Game
 
     System::Input.instance.update(delta)
     objects.update(delta)
+    time2 = Gosu::milliseconds
+    @oup = (time2 - time) * 0.001
     @ui.update(delta)
+    @uiup = (Gosu::milliseconds - time2) * 0.001
   end
 
   def draw
+    time = Gosu::milliseconds
     objects.draw
+    time2 = Gosu::milliseconds
+    @od = (time2 - time) * 0.001
     @ui.draw
-    @font.draw("FPS: #{@fps}", 10, @window.height - 16, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @uid = (Gosu::milliseconds - time2) * 0.001
+
+    @font.draw("FPS: #{@fps}", 10, @window.height - 20, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw("Objects update: #{@oup}", 10, @window.height - 100, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw("Ui update: #{@uiup}", 10, @window.height - 80, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw("Objects draw: #{@od}", 10, @window.height - 60, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw("Ui draw: #{@uid}", 10, @window.height - 40, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
     @font.draw("Objects: #{@objects.total_objects}", 100, @window.height - 16, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
   end
 
