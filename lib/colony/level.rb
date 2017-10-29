@@ -13,8 +13,8 @@ module Colony
 
     ROWS = (1000 / Block::SIZE).to_i
     COLS = (1500 / Block::SIZE).to_i
-    WIDTH = Float(COLS * Block::SIZE)
-    HEIGHT = Float(ROWS * Block::SIZE)
+    WIDTH = (COLS * Block::SIZE).to_f
+    HEIGHT = (ROWS * Block::SIZE).to_f
 
     attr_reader :left, :right, :top, :bottom,
       :width, :height
@@ -56,7 +56,7 @@ module Colony
 
           block = Block.new(x, y)
           if row_i == 0
-            block.surfacify
+            #block.surfacify
           end
           Game.instance.objects << block
           row << block
