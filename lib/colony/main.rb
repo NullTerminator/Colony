@@ -12,6 +12,7 @@ require_relative "../system/outline_renderer"
 require_relative "../ui/ui_manager"
 require_relative "../objects/zorder"
 
+require_relative 'ant_behavior'
 require_relative 'level'
 require_relative 'use_cases'
 require_relative 'work_manager'
@@ -57,6 +58,7 @@ class Game
 
   def init
     level = Colony::Level.new(@block_fac, @block_repo, @window)
+    @ant_behavior = Colony::AntBehavior.new(level, @ant_repo)
     work_manager = Colony::WorkManager.new(@events)
     ui << Colony::Ui::BlockSelector.new(level, @events)
     ui << Colony::Ui::WorkTracker.new(work_manager)
@@ -64,8 +66,9 @@ class Game
 
     10.times do
       a = @ant_fac.build
-      a.y = 55
       a.x = rand(level.width) + level.left
+      block = level.get_block_at(a.x, level.top + 1)
+      a.y = block.top - 2
       @ant_repo.add(a)
     end
   end
@@ -78,6 +81,7 @@ class Game
     calc_fps(delta) if @show_fps
 
     @input.update(delta)
+    @ant_behavior.update(delta)
     @ant_repo.all.each { |obj| obj.update(delta) }
     @block_repo.all.each { |obj| obj.update(delta) }
 

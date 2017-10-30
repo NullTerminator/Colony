@@ -11,9 +11,47 @@ class Movable < RenderObject
     @vel_y = 0.0
   end
 
+  def move_up
+    @angle = 0
+    move
+  end
+
+  def move_down
+    @angle = 180
+    move
+  end
+
+  def move_left
+    @angle = 270
+    move
+  end
+
+  def move_right
+    @angle = 90
+    move
+  end
+
+  def moving_right?
+    vel_x > 0.0
+  end
+
+  def moving_left?
+    vel_x < 0.0
+  end
+
+  def move
+    @vel_x = Gosu::offset_x(angle, speed)
+    @vel_y = Gosu::offset_y(angle, speed)
+  end
+
+  def stop
+    @vel_x = 0.0
+    @vel_y = 0.0
+  end
+
   def update(delta)
-    @x += vel_x
-    @y += vel_y
+    @x += vel_x * delta
+    @y += vel_y * delta
 
     super
   end

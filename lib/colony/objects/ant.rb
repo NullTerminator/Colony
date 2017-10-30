@@ -10,8 +10,8 @@ module Colony
     def initialize
       super(ZOrder::PLAYER)
       @color = Gosu::Color::RED
-      @width = @height = 7
-      @speed = 7.0
+      @width = @height = 7.0
+      @speed = rand(13..18)
     end
 
   end
