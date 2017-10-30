@@ -3,18 +3,30 @@ require_relative 'zorder'
 
 class RenderObject
 
+  class << self
+    attr_accessor :renderer
+  end
+
   attr_accessor :texture, :x, :y, :z, :width, :height,
                 :angle, :scale_x, :scale_y,
                 :color, :visible
+
   alias :visible? :visible
 
-  def initialize(x, y, z, tex = nil, scale_x = 1.0, scale_y = 1.0, color = Gosu::Color::FUCHSIA)
-    @x, @y, @z = x, y, z
+  def initialize(z, tex = nil, scale_x = 1.0, scale_y = 1.0, color = Gosu::Color::FUCHSIA)
+    @z = z
     @texture = tex
     @scale_x, @scale_y = scale_x, scale_y
     @color = color
+    init
+  end
+
+  def init
+    @x = 0
+    @y = 0
     @angle = 0.0
-    @visible = true
+    show
+    self
   end
 
   def update(delta)
@@ -22,28 +34,10 @@ class RenderObject
   end
 
   def draw
-    window = System::Window.instance
-
-    if visible?
-      if texture
-        texture.draw_rot(x, y, z, angle, 0.5, 0.5, scale_x, scale_y, color)
-      else
-        window.draw_quad(left, top, color,
-                         right, top, color,
-                         right, bottom, color,
-                         left, bottom, color,
-                         z)
-      end
-    end
-
-    if Game.instance.debug
-      dbc = Gosu::Color::WHITE
-      window.rotate(angle, x, y) do
-        window.draw_line(left, top, dbc, right, top, dbc, ZOrder::DEBUG)
-        window.draw_line(right, top, dbc, right, bottom, dbc, ZOrder::DEBUG)
-        window.draw_line(right, bottom, dbc, left, bottom, dbc, ZOrder::DEBUG)
-        window.draw_line(left, bottom, dbc, left, top, dbc, ZOrder::DEBUG)
-      end
+    if self.class.renderer
+      self.class.renderer.draw(self)
+    else
+      raise "No renderer set for #{self.class}"
     end
   end
 
@@ -118,10 +112,6 @@ class RenderObject
 
   def toggle_visible
     self.visible = !visible
-  end
-
-  def kill
-    Game.instance.objects >> self
   end
 
   private

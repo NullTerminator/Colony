@@ -1,13 +1,12 @@
-require "singleton"
 require "gosu"
 
 module System
   class Window < Gosu::Window
-    include Singleton
 
-    def initialize
+    def initialize(game)
       super 1920, 1080, false
       self.caption = "Game"
+      @game = game
     end
 
     def needs_cursor?
@@ -15,19 +14,19 @@ module System
     end
 
     def update
-      Game.instance.update
+      @game.update
     end
 
     def draw
-      Game.instance.draw
+      @game.draw
     end
 
     def button_down(id)
-      Input.instance.button(id, true)
+      @game.button(id, true)
     end
 
     def button_up(id)
-      Input.instance.button(id, false)
+      @game.button(id, false)
     end
 
     def width

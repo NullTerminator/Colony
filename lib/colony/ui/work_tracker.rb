@@ -1,7 +1,4 @@
-require_relative '../../window'
 require_relative '../../ui/ui_object'
-
-require_relative '../work_manager'
 
 module Colony
 
@@ -9,20 +6,16 @@ module Colony
 
     class WorkTracker < ::Ui::UiObject
 
-      def initialize
-        super(0, 0)
+      def initialize(work_manager)
+        super()
         @width = @height = Block::SIZE
         @color = Gosu::Color::GREEN
+        @work_manager = work_manager
       end
 
       def draw
-        window = System::Window.instance
-
-        Colony::WorkManager.instance.each_block do |block|
-          window.draw_line(block.left, block.top, color, block.right, block.top, color, z)
-          window.draw_line(block.right, block.top, color, block.right, block.bottom, color, z)
-          window.draw_line(block.right, block.bottom, color, block.left, block.bottom, color, z)
-          window.draw_line(block.left, block.bottom, color, block.left, block.top, color, z)
+        @work_manager.each_block do |block|
+          self.class.renderer.draw(block, color: color, z: z)
         end
       end
 

@@ -4,7 +4,9 @@ class Foo
 end
 
 describe System::Input do
-  subject { described_class.instance }
+  subject { described_class.new(window) }
+
+  let(:window) { double(mouse_x: 11, mouse_y: 22, width: 100, height: 100) }
 
   it "defaults mouse positions" do
     expect(subject.mouse_x).to eq 0.0
@@ -12,11 +14,6 @@ describe System::Input do
   end
 
   describe "update callback" do
-    let(:window) { double(mouse_x: 11, mouse_y: 22, width: 100, height: 100) }
-
-    before do
-      allow(System::Window).to receive(:instance).and_return(window)
-    end
 
     it "saves mouse position from Window" do
       subject.update(0.1)
@@ -33,8 +30,8 @@ describe System::Input do
       end
 
       it "triggers mouse_move event" do
-        subject.register(:mouse_move, foo)
         subject.update(1)
+        subject.register(:mouse_move, foo)
 
         expect(foo).to receive(:on_mouse_move).with(20, 30, 9, 8)
 

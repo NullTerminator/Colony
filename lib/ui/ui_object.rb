@@ -6,8 +6,8 @@ module Ui
     alias :mouse_down? :mouse_down
     alias :hover? :hover
 
-    def initialize(x, y)
-      super(x, y, ZOrder::UI)
+    def initialize
+      super(ZOrder::UI)
       @hover = false
     end
 

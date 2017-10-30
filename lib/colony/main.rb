@@ -1,56 +1,72 @@
-require "singleton"
 require "gosu"
 
 require_relative "../window"
 require_relative "../system/media_manager"
 require_relative "../system/event_manager"
-require_relative "../system/object_manager"
+require_relative "../system/object_repository"
+require_relative "../system/object_factory"
+require_relative "../system/caching_factory"
 require_relative "../system/input"
+require_relative "../system/fill_renderer"
+require_relative "../system/outline_renderer"
 require_relative "../ui/ui_manager"
 require_relative "../objects/zorder"
 
-require_relative 'use_cases'
 require_relative 'level'
+require_relative 'use_cases'
+require_relative 'work_manager'
 require_relative 'objects/ant'
+require_relative 'objects/block'
 require_relative 'ui/block_selector'
 require_relative 'ui/work_tracker'
 
 class Game
-  include Singleton
 
   attr_accessor :show_fps, :debug, :show_objects
 
-  attr_reader :events, :objects, :ui
+  attr_reader :events, :ui
 
   def initialize
     @show_fps = true
-    @debug = true
-    @last_time = 0
+    @debug = false
+    @last_time = Gosu::milliseconds
     @frames = 0
     @frame_time = 0.0
     @fps = 0
 
-    @window = System::Window.instance
+    @window = System::Window.new(self)
     @window.caption = "THE COLONY"
-    @media = System::MediaManager.instance
+    @media = System::MediaManager.new
     @events = System::EventManager.new
-    @objects = System::ObjectManager.new
-    @ui = Ui::UiManager.new
+    @input = System::Input.new(@window)
+    @ui = Ui::UiManager.new(@input)
     @font = @media.font(:default)
 
-    System::Input.instance.register(:kb_escape, self)
+    fill = System::FillRenderer.new(@window)
+    outline = System::OutlineRenderer.new(@window)
+    @block_repo = System::ObjectRepository.new
+    @ant_repo = System::ObjectRepository.new
+
+    Colony::Ui::BlockSelector.renderer = outline
+    Colony::Ui::WorkTracker.renderer = outline
+    @block_fac = System::ObjectFactory.new(Colony::Block, fill)
+    @ant_fac = System::CachingFactory.new(Colony::Ant, fill)
+
+    @input.register(:kb_escape, self)
   end
 
   def init
-    Colony::UseCases.init
-    level = Colony::Level.instance
-    ui << Colony::Ui::BlockSelector.new
-    ui << Colony::Ui::WorkTracker.new
+    level = Colony::Level.new(@block_fac, @block_repo, @window)
+    work_manager = Colony::WorkManager.new(@events)
+    ui << Colony::Ui::BlockSelector.new(level, @events)
+    ui << Colony::Ui::WorkTracker.new(work_manager)
+    Colony::UseCases.init(events, work_manager)
+
     10.times do
-      a = Colony::Ant.new
+      a = @ant_fac.build
       a.y = 55
       a.x = rand(level.width) + level.left
-      objects.add(a)
+      @ant_repo.add(a)
     end
   end
 
@@ -61,20 +77,24 @@ class Game
 
     calc_fps(delta) if @show_fps
 
-    System::Input.instance.update(delta)
-    objects.update(delta)
+    @input.update(delta)
+    @ant_repo.all.each { |obj| obj.update(delta) }
+    @block_repo.all.each { |obj| obj.update(delta) }
+
     time2 = Gosu::milliseconds
     @oup = (time2 - time) * 0.001
-    @ui.update(delta)
+    @ui.all.each { |obj| obj.update(delta) }
     @uiup = (Gosu::milliseconds - time2) * 0.001
   end
 
   def draw
     time = Gosu::milliseconds
-    objects.draw
+    @ant_repo.all.each(&:draw)
+    @block_repo.all.each(&:draw)
+
     time2 = Gosu::milliseconds
     @od = (time2 - time) * 0.001
-    @ui.draw
+    @ui.all.each(&:draw)
     @uid = (Gosu::milliseconds - time2) * 0.001
 
     @font.draw("FPS: #{@fps}", 10, @window.height - 20, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
@@ -82,7 +102,15 @@ class Game
     @font.draw("Ui update: #{@uiup}", 10, @window.height - 80, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
     @font.draw("Objects draw: #{@od}", 10, @window.height - 60, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
     @font.draw("Ui draw: #{@uid}", 10, @window.height - 40, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw("Objects: #{@objects.total_objects}", 100, @window.height - 16, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
+    @font.draw("Objects: #{@ant_repo.all.length + @block_repo.all.length}", 100, @window.height - 16, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
+  end
+
+  def show
+    @window.show
+  end
+
+  def button(id, down)
+    @input.button(id, down)
   end
 
   def on_kb_escape(down)

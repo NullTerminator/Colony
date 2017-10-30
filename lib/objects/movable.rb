@@ -4,8 +4,8 @@ class Movable < RenderObject
 
   attr_accessor :vel_x, :vel_y, :speed
 
-  def initialize
-    super(0, 0, z)
+  def initialize(z)
+    super(z)
     @speed = 0
     @vel_x = 0.0
     @vel_y = 0.0

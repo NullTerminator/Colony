@@ -2,10 +2,9 @@
 
 require_relative "../lib/colony/main"
 
-game = Game.instance
+game = Game.new
 game.show_fps = ARGV.include? "fps"
 game.debug = ARGV.include? "debug"
 game.show_objects = ARGV.include? "show_objects"
 game.init
-
-System::Window.instance.show
+game.show

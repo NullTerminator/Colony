@@ -8,8 +8,7 @@ module Colony
   class Ant < Movable
 
     def initialize
-      super
-      @z = ZOrder::PLAYER
+      super(ZOrder::PLAYER)
       @color = Gosu::Color::RED
       @width = @height = 7
       @speed = 7.0

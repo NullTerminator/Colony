@@ -1,16 +1,14 @@
-require "singleton"
 require "gosu"
 require_relative "event_manager"
-require_relative "../window"
 
 module System
   class Input < EventManager
-    include Singleton
 
     attr_reader :mouse_x, :mouse_y
 
-    def initialize
-      super
+    def initialize(window)
+      super()
+      @window = window
       @mouse_x = 0.0
       @mouse_y = 0.0
       @last_mouse_x = 0.0
@@ -19,11 +17,10 @@ module System
     end
 
     def update(delta)
-      window = Window.instance
       @last_mouse_x = mouse_x
       @last_mouse_y = mouse_y
-      @mouse_x = window.mouse_x
-      @mouse_y = window.mouse_y
+      @mouse_x = @window.mouse_x
+      @mouse_y = @window.mouse_y
 
       dx = mouse_x - @last_mouse_x
       dy = mouse_y - @last_mouse_y
@@ -38,8 +35,7 @@ module System
     end
 
     def mouse_on_screen?
-      window = Window.instance
-      mouse_x >= 0.0 && mouse_x <= window.width && mouse_y >= 0.0 && mouse_y <= window.height
+      mouse_x >= 0.0 && mouse_x <= @window.width && mouse_y >= 0.0 && mouse_y <= @window.height
     end
 
     def button(id, down)
@@ -71,7 +67,7 @@ module System
       when Gosu::KbSpace
         handle_key(:kb_space, down)
       else
-        if (char = Window.instance.button_id_to_char(id)) && char.strip.length > 0
+        if (char = @window.button_id_to_char(id)) && char.strip.length > 0
           handle_key("kb_#{char}".to_sym, down)
         end
       end

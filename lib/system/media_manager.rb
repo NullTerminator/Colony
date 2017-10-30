@@ -1,8 +1,9 @@
-require "singleton"
+require 'gosu'
+
+require_relative 'animation'
 
 module System
   class MediaManager
-    include Singleton
 
     def initialize
       @images = load_images

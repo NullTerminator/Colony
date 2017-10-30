@@ -12,8 +12,7 @@ module Game
     #include Singleton
 
     def initialize
-      super
-      @z = ZOrder::PLAYER
+      super(ZOrder::PLAYER)
       @texture = System::MediaManager.instance.image(:player)
       window = System::Window.instance
       @x = window.width * 0.5

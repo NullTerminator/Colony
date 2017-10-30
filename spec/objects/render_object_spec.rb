@@ -1,19 +1,18 @@
 require_relative "../../lib/objects/render_object.rb"
 
 describe RenderObject do
-  subject { described_class.new(10, 20, 1, texture) }
+  subject { described_class.new(1) }
   let(:texture) { double("Texture", width: 15, height: 15) }
+
+  before do
+    subject.texture = texture
+    subject.move_to(10, 20)
+  end
 
   it { is_expected.to be_visible }
 
-  it "sets postition" do
-    expect(subject.x).to eq 10
-    expect(subject.y).to eq 20
+  it "sets z" do
     expect(subject.z).to eq 1
-  end
-
-  it "sets texture" do
-    expect(subject.texture).to eq texture
   end
 
   it "defaults angle" do
@@ -26,9 +25,13 @@ describe RenderObject do
   end
 
   it "can look at another object" do
+    subject.move_to(10, 20)
     expect(subject.angle).to eq 0.0
-    target = described_class.new(20, 20, 1)
+    target = described_class.new(1)
+    target.move_to(20, 20)
+
     subject.look_at(target)
+
     expect(subject.angle).to eq 90
   end
 
@@ -90,21 +93,26 @@ describe RenderObject do
   end
 
   describe "#collide?" do
-    subject { described_class.new(10, 10, 1) }
+    subject { described_class.new(1) }
+    let(:other) { described_class.new(1) }
+    let(:ox) { 15 }
+    let(:oy) { 25 }
 
     before do
-      subject.width = 10
-      subject.height = 10
-    end
+      subject.move_to(10, 10)
 
-    let(:other) { double :RenderObject, left: 20, right: 30, top: 20, bottom: 30 }
+      other.move_to(ox, oy)
+      other.width = 10
+      other.height = 10
+    end
 
     it "returns false" do
       expect(subject.collide?(other)).to be false
     end
 
     context "when overlapping another object" do
-      let(:other) { double :RenderObject, left: 14, right: 25, top: 14, bottom: 25 }
+      let(:ox) { 14 }
+      let(:oy) { 14 }
 
       it "returns true" do
         expect(subject.collide?(other)).to be true

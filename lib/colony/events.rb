@@ -2,6 +2,10 @@ module Colony
 
   module Events
 
+    module Ui
+      BLOCK_CLICKED = :block_clicked
+    end
+
     module Ants
     end
 

@@ -1,27 +1,25 @@
-require 'singleton'
-
-require_relative 'main'
-require_relative '../window'
-
 require_relative 'objects/block'
 
 module Colony
 
   class Level
 
-    include Singleton
-
     ROWS = (1000 / Block::SIZE).to_i
     COLS = (1500 / Block::SIZE).to_i
     WIDTH = (COLS * Block::SIZE).to_f
     HEIGHT = (ROWS * Block::SIZE).to_f
 
-    attr_reader :left, :right, :top, :bottom,
+    attr_reader :left, :right,
+      :top, :bottom,
       :width, :height
 
-    def initialize
-      @width = COLS * Block::SIZE
-      @height = ROWS * Block::SIZE
+    def initialize(block_factory, block_repo, window)
+      @width = WIDTH
+      @height = HEIGHT
+      @block_factory = block_factory
+      @block_repo = block_repo
+      @window = window
+
       init_blocks
     end
 
@@ -42,10 +40,10 @@ module Colony
     def init_blocks
       @blocks = []
 
-      @left = (System::Window.instance.width * 0.5) - (WIDTH * 0.5)
-      @right = left + width
+      @left = (@window.width * 0.5) - (WIDTH * 0.5)
+      @right = left + WIDTH
       @top = 10.0
-      @bottom = top + height
+      @bottom = top + HEIGHT
 
       ROWS.times do |row_i|
         row = []
@@ -54,11 +52,12 @@ module Colony
           x = left + (col_i * Block::SIZE) + (Block::SIZE * 0.5)
           y = top + (row_i * Block::SIZE) + (Block::SIZE * 0.5)
 
-          block = Block.new(x, y)
+          block = @block_factory.build
+          block.move_to(x, y)
           if row_i == 0
-            #block.surfacify
+            block.grassify
           end
-          Game.instance.objects << block
+          @block_repo << block
           row << block
         end
 

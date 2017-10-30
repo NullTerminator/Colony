@@ -1,20 +1,15 @@
-require 'singleton'
-
-require_relative 'main'
 require_relative 'events'
 
 module Colony
 
   class WorkManager
 
-    include Singleton
-
-    def initialize
+    def initialize(eventer)
       @blocks = []
 
       # on dirt broke event remove the block since work is done
-      Game.instance.events.register(Events::Blocks::DUG, self)
-      #Game.instance.events.register(Events::Blocks::DUG, ->(block) {
+      #eventer.register(Events::Blocks::DUG, self)
+      #eventer.register(Events::Blocks::DUG, ->(block) {
         #remove(block)
       #})
     end
@@ -45,9 +40,9 @@ module Colony
     def get_closest_block(x, y)
     end
 
-    def on_block_dug(block)
-      remove(block)
-    end
+    #def on_block_dug(block)
+      #remove(block)
+    #end
 
   end
 end
