@@ -15,25 +15,32 @@ module Colony
         @color = Gosu::Color::WHITE
         @level = level
         @eventer = eventer
+        @batch = {}
       end
 
       def left_clicked
         if @block
-          @eventer.trigger(Events::Ui::BLOCK_CLICKED, @block)
+          @eventer.trigger(Events::Ui::BLOCK_SELECTED, @block)
         end
       end
 
       def on_mouse_move(mx, my, dx, dy)
-        super
-
         if @block = @level.get_block_at(mx, my)
           move_to(@block.x, @block.y)
+
+          if mouse_down? && !@batch[@block]
+            @batch[@block] = true
+            @eventer.trigger(Events::Ui::BLOCK_SELECTED, @block)
+          end
         end
       end
 
-      def draw
-        if @block && @block.is_workable?
-          self.class.renderer.draw(@block, color: color, z: z)
+      def on_mouse_out
+      end
+
+      def draw(renderer)
+        if @block && @block.workable?
+          renderer.draw(@block, color: color, z: z)
         end
       end
 

@@ -6,16 +6,20 @@ module Colony
 
     class WorkTracker < ::Ui::UiObject
 
-      def initialize(work_manager)
+      COLOR_REACHABLE = Gosu::Color::GREEN
+      COLOR_BLOCKED = Gosu::Color::RED
+
+      def initialize(work_manager, level)
         super()
         @width = @height = Block::SIZE
-        @color = Gosu::Color::GREEN
         @work_manager = work_manager
+        @level = level
       end
 
-      def draw
+      def draw(renderer)
         @work_manager.each_block do |block|
-          self.class.renderer.draw(block, color: color, z: z)
+          color = @level.is_reachable?(block) ? COLOR_REACHABLE : COLOR_BLOCKED
+          renderer.draw(block, color: color, z: z)
         end
       end
 

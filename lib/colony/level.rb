@@ -25,14 +25,37 @@ module Colony
 
     def get_block_at(x, y)
       if hit?(x, y)
-        col = ((x - left) / Block::SIZE).to_i
-        row = ((y - top) / Block::SIZE).to_i
-        return @blocks[row][col]
+        return @blocks[get_row(y)][get_column(x)]
       end
     end
 
+    def is_reachable?(block)
+      neighbors(block).any? do |n|
+        n.is_tunnel? || n.is_grass?
+      end
+    end
+
+    def neighbors(block)
+      row = get_row(block.y)
+      col = get_column(block.x)
+      n = []
+      n << @blocks[row - 1][col] if row > 0
+      n << @blocks[row + 1][col] if row < (ROWS - 1)
+      n << @blocks[row][col - 1] if col > 0
+      n << @blocks[row][col + 1] if col < (COLS - 1)
+      n
+    end
+
     def hit?(posx, posy)
-      posx > left && posx < right && posy > top && posy < bottom
+      posx >= left && posx <= right && posy >= top && posy <= bottom
+    end
+
+    def get_column(x)
+      ((x - left) / Block::SIZE).to_i
+    end
+
+    def get_row(y)
+      ((y - top) / Block::SIZE).to_i
     end
 
     private
@@ -49,14 +72,19 @@ module Colony
         row = []
 
         COLS.times do |col_i|
-          x = left + (col_i * Block::SIZE) + (Block::SIZE * 0.5)
-          y = top + (row_i * Block::SIZE) + (Block::SIZE * 0.5)
+          block_left = left + (col_i * Block::SIZE)
+          block_top = top + (row_i * Block::SIZE)
 
           block = @block_factory.build
-          block.move_to(x, y)
+          block.left = block_left
+          block.top = block_top
+
           if row_i == 0
             block.grassify
+          elsif col_i == 40
+            block.excavate
           end
+
           @block_repo << block
           row << block
         end

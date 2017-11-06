@@ -5,14 +5,14 @@ require_relative "../system/media_manager"
 require_relative "../system/event_manager"
 require_relative "../system/object_repository"
 require_relative "../system/object_factory"
-require_relative "../system/caching_factory"
 require_relative "../system/input"
 require_relative "../system/fill_renderer"
 require_relative "../system/outline_renderer"
 require_relative "../ui/ui_manager"
 require_relative "../objects/zorder"
 
-require_relative 'ant_behavior'
+require_relative 'ant_factory'
+require_relative 'ant_state_factory'
 require_relative 'level'
 require_relative 'use_cases'
 require_relative 'work_manager'
@@ -28,6 +28,7 @@ class Game
   attr_reader :events, :ui
 
   def initialize
+    srand
     @show_fps = true
     @debug = false
     @last_time = Gosu::milliseconds
@@ -43,29 +44,30 @@ class Game
     @ui = Ui::UiManager.new(@input)
     @font = @media.font(:default)
 
-    fill = System::FillRenderer.new(@window)
-    outline = System::OutlineRenderer.new(@window)
-    @block_repo = System::ObjectRepository.new
-    @ant_repo = System::ObjectRepository.new
-
-    Colony::Ui::BlockSelector.renderer = outline
-    Colony::Ui::WorkTracker.renderer = outline
-    @block_fac = System::ObjectFactory.new(Colony::Block, fill)
-    @ant_fac = System::CachingFactory.new(Colony::Ant, fill)
+    @outline = System::OutlineRenderer.new(@window)
+    @fill = System::FillRenderer.new(@window)
 
     @input.register(:kb_escape, self)
+    @input.register(:kb_space, self)
   end
 
   def init
-    level = Colony::Level.new(@block_fac, @block_repo, @window)
-    @ant_behavior = Colony::AntBehavior.new(level, @ant_repo)
-    work_manager = Colony::WorkManager.new(@events)
-    ui << Colony::Ui::BlockSelector.new(level, @events)
-    ui << Colony::Ui::WorkTracker.new(work_manager)
-    Colony::UseCases.init(events, work_manager)
+    @block_repo = System::ObjectRepository.new
+    @ant_repo = System::ObjectRepository.new
 
-    10.times do
-      a = @ant_fac.build
+    block_fac = System::ObjectFactory.new(Colony::Block)
+    level = Colony::Level.new(block_fac, @block_repo, @window)
+    work_manager = Colony::WorkManager.new(level, @events)
+    ant_state_factory = Colony::AntStateFactory.new(level, work_manager, @events)
+    ant_fac = Colony::AntFactory.new(ant_state_factory)
+
+    ui << Colony::Ui::BlockSelector.new(level, @events)
+    ui << Colony::Ui::WorkTracker.new(work_manager, level)
+
+    Colony::UseCases.init(@events, @input, work_manager)
+
+    15.times do
+      a = ant_fac.build
       a.x = rand(level.width) + level.left
       block = level.get_block_at(a.x, level.top + 1)
       a.y = block.top - 2
@@ -81,8 +83,7 @@ class Game
     calc_fps(delta) if @show_fps
 
     @input.update(delta)
-    @ant_behavior.update(delta)
-    @ant_repo.all.each { |obj| obj.update(delta) }
+    @ant_repo.all.each { |obj| obj.update(@paused ? 0.0 : delta) }
     @block_repo.all.each { |obj| obj.update(delta) }
 
     time2 = Gosu::milliseconds
@@ -93,12 +94,12 @@ class Game
 
   def draw
     time = Gosu::milliseconds
-    @ant_repo.all.each(&:draw)
-    @block_repo.all.each(&:draw)
+    @ant_repo.all.each { |a| a.draw(@fill) }
+    @block_repo.all.each { |b| b.draw(@fill) }
 
     time2 = Gosu::milliseconds
     @od = (time2 - time) * 0.001
-    @ui.all.each(&:draw)
+    @ui.all.each { |u| u.draw(@outline) }
     @uid = (Gosu::milliseconds - time2) * 0.001
 
     @font.draw("FPS: #{@fps}", 10, @window.height - 20, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
@@ -119,6 +120,10 @@ class Game
 
   def on_kb_escape(down)
     @window.close if down
+  end
+
+  def on_kb_space(down)
+    @paused = !@paused if down
   end
 
   private
