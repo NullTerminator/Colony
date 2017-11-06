@@ -3,7 +3,7 @@ require_relative './object_factory'
 module System
   class CachingFactory < ObjectFactory
 
-    def initialize(klass, renderer)
+    def initialize(klass)
       super
       @cache = []
     end

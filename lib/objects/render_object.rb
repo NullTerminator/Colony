@@ -3,10 +3,6 @@ require_relative 'zorder'
 
 class RenderObject
 
-  class << self
-    attr_accessor :renderer
-  end
-
   attr_accessor :texture, :x, :y, :z, :width, :height,
                 :angle, :scale_x, :scale_y,
                 :color, :visible
@@ -33,12 +29,8 @@ class RenderObject
     texture.update(delta) if texture && texture.respond_to?(:update)
   end
 
-  def draw
-    if self.class.renderer
-      self.class.renderer.draw(self)
-    else
-      raise "No renderer set for #{self.class}"
-    end
+  def draw(renderer)
+    renderer.draw(self)
   end
 
   def move_to(x, y)
@@ -47,7 +39,7 @@ class RenderObject
   end
 
   def look_at(obj)
-    self.angle = Gosu::angle(@x, @y, obj.x, obj.y)
+    self.angle = Gosu::angle(x, y, obj.x, obj.y)
   end
 
   def color_gl
