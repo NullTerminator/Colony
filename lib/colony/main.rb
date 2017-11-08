@@ -25,8 +25,6 @@ class Game
 
   attr_accessor :show_fps, :debug, :show_objects
 
-  attr_reader :events, :ui
-
   def initialize
     srand
     @show_fps = true
@@ -61,8 +59,8 @@ class Game
     ant_state_factory = Colony::AntStateFactory.new(level, work_manager, @events)
     ant_fac = Colony::AntFactory.new(ant_state_factory)
 
-    ui << Colony::Ui::BlockSelector.new(level, @events)
-    ui << Colony::Ui::WorkTracker.new(work_manager, level)
+    @ui << Colony::Ui::BlockSelector.new(level, @events)
+    @ui << Colony::Ui::WorkTracker.new(work_manager, level)
 
     Colony::UseCases.init(@events, @input, work_manager)
 
