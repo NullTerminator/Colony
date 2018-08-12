@@ -29,7 +29,7 @@ module Game
       handle_move_input
 
       super
-      keep_on_screen
+      #keep_on_screen
 
       handle_shooting(delta)
     end

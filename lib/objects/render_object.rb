@@ -18,8 +18,8 @@ class RenderObject
   end
 
   def init
-    @x = 0
-    @y = 0
+    @x = 0.0
+    @y = 0.0
     @angle = 0.0
     show
     self
@@ -39,7 +39,11 @@ class RenderObject
   end
 
   def look_at(obj)
-    self.angle = Gosu::angle(x, y, obj.x, obj.y)
+    look_at_pos(obj.x, obj.y)
+  end
+
+  def look_at_pos(pos_x, pos_y)
+    self.angle = Gosu::angle(x, y, pos_x, pos_y)
   end
 
   def color_gl
@@ -104,27 +108,6 @@ class RenderObject
 
   def toggle_visible
     self.visible = !visible
-  end
-
-  private
-
-  def keep_on_screen
-    window = System::Window.instance
-    if top < 0
-      self.top = 0
-    end
-
-    if left < 0
-      self.left = 0
-    end
-
-    if bottom > window.height
-      self.bottom = window.height
-    end
-
-    if right > window.width
-      self.right = window.width
-    end
   end
 
 end

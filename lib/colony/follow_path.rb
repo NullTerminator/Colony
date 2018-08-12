@@ -22,14 +22,14 @@ module Colony
 
     def enter
       eventer.register(Events::Work::ADDED, self)
-      eventer.register(Events::Blocks::DUG, self)
       eventer.register(Events::Work::REMOVED, self)
+      eventer.register(Events::Blocks::DUG, self)
     end
 
     def exit
-      eventer.unregister(Events::Blocks::DUG, self)
       eventer.unregister(Events::Work::ADDED, self)
       eventer.unregister(Events::Work::REMOVED, self)
+      eventer.unregister(Events::Blocks::DUG, self)
     end
 
     def update(delta)

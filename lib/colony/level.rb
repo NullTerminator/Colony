@@ -30,9 +30,7 @@ module Colony
     end
 
     def is_reachable?(block)
-      neighbors(block).any? do |n|
-        n.is_tunnel? || n.is_grass?
-      end
+      neighbors(block).any?(&:walkable?)
     end
 
     def neighbors(block)

@@ -66,7 +66,7 @@ class Game
 
     15.times do
       a = ant_fac.build
-      a.x = rand(level.width) + level.left
+      a.x = rand(level.left..level.right)
       block = level.get_block_at(a.x, level.top + 1)
       a.y = block.top - 2
       @ant_repo.add(a)
