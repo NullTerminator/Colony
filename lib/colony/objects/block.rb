@@ -79,28 +79,28 @@ module Colony
 
   end
 
-  private
+  #private
 
-  module Dirt
-    def is_workable?
-      true
-    end
-  end
+  #module Dirt
+    #def is_workable?
+      #true
+    #end
+  #end
 
-  module Grass
-    def is_workable?
-      false
-    end
+  #module Grass
+    #def is_workable?
+      #false
+    #end
 
-    def top
-      y + height * 0.4
-    end
-  end
+    #def top
+      #y + height * 0.4
+    #end
+  #end
 
-  module Tunnel
-    def is_workable?
-      false
-    end
-  end
+  #module Tunnel
+    #def is_workable?
+      #false
+    #end
+  #end
 
 end

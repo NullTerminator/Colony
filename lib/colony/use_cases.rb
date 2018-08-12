@@ -4,7 +4,8 @@ module Colony
 
   class UseCases
 
-    def self.init(eventer, input, work_manager)
+    def self.init(eventer, input, level, work_manager)
+      @level = level
       @work_manager = work_manager
 
       input.register(:kb_c, self)
@@ -24,8 +25,8 @@ module Colony
 
     def self.on_block_dug(block)
       block.excavate
-      # if grass is above this block, break that block
       @work_manager.remove(block)
+      @level.neighbors(block).select { |b| b.is_grass? }.each(&:excavate)
     end
 
   end

@@ -62,13 +62,13 @@ class Game
     @ui << Colony::Ui::BlockSelector.new(level, @events)
     @ui << Colony::Ui::WorkTracker.new(work_manager, level)
 
-    Colony::UseCases.init(@events, @input, work_manager)
+    Colony::UseCases.init(@events, @input, level, work_manager)
 
     15.times do
       a = ant_fac.build
       a.x = rand(level.left..level.right)
       block = level.get_block_at(a.x, level.top + 1)
-      a.y = block.top - 2
+      a.y = block.top - 1
       @ant_repo.add(a)
     end
   end

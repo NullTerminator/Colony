@@ -77,10 +77,10 @@ module Colony
           block.left = block_left
           block.top = block_top
 
-          if row_i == 0
-            block.grassify
-          elsif col_i == 40
+          if col_i == 40
             block.excavate
+          elsif row_i == 0
+            block.grassify
           end
 
           @block_repo << block
