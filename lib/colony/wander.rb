@@ -20,7 +20,7 @@ module Colony
 
       if @target_x
         ant.look_at_pos(@target_x, @target_y)
-        ant.move
+        ant.move(ant.speed * 0.6)
       end
 
       look_for_work

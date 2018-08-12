@@ -39,9 +39,9 @@ class Movable < RenderObject
     vel_x < 0.0
   end
 
-  def move
-    @vel_x = Gosu::offset_x(angle, speed)
-    @vel_y = Gosu::offset_y(angle, speed)
+  def move(spd = speed)
+    @vel_x = Gosu::offset_x(angle, spd)
+    @vel_y = Gosu::offset_y(angle, spd)
   end
 
   def stop
