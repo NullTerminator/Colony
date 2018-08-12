@@ -9,6 +9,7 @@ module System
       @images = load_images
       @animations = load_animations
       @sounds = load_sounds
+      @songs = load_music
       @fonts = load_fonts
     end
 
@@ -26,6 +27,10 @@ module System
 
     def sound(key)
       @sounds[key]
+    end
+
+    def music(key)
+      @songs[key]
     end
 
     def font(key)
@@ -90,11 +95,20 @@ module System
 
     def load_sounds
       def l(*args)
-        args[0] = "media/sounds/" + args[0]
+        args[0] = "media/sounds/#{args[0]}"
         Gosu::Sample.new(*args)
       end
       {
         beep: l("Beep.wav")
+      }
+    end
+
+    def load_music
+      def l(fname)
+        Gosu::Song.new("media/music/#{fname}")
+      end
+      {
+        giant: l("Giant.mp3")
       }
     end
 

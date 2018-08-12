@@ -47,6 +47,7 @@ class Game
 
     @input.register(:kb_escape, self)
     @input.register(:kb_space, self)
+    @input.register(:kb_m, self)
   end
 
   def init
@@ -71,6 +72,9 @@ class Game
       a.y = block.top - 1
       @ant_repo.add(a)
     end
+
+    @song = @media.music(:giant)
+    @song.play(true)
   end
 
   def update
@@ -122,6 +126,15 @@ class Game
 
   def on_kb_space(down)
     @paused = !@paused if down
+  end
+
+  def on_kb_m(down)
+    return unless down
+    if @song.playing?
+      @song.pause
+    else
+      @song.play
+    end
   end
 
   private
