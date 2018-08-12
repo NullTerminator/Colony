@@ -98,6 +98,10 @@ class RenderObject
     posx > left && posx < right && posy > top && posy < bottom
   end
 
+  def close_enough_to?(posx, posy)
+    (x - posx).abs <= 1.0 && (y - posy).abs <= 1.0
+  end
+
   def hide
     self.visible = false
   end

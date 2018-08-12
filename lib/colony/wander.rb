@@ -14,40 +14,31 @@ module Colony
     end
 
     def update(delta)
-      move_like_an_ant(delta)
-      stay_in_level
+      if !@target_x || ant.close_enough_to?(@target_x, @target_y)
+        move_like_an_ant
+      end
+
+      if @target_x
+        ant.look_at_pos(@target_x, @target_y)
+        ant.move
+      end
+
       look_for_work
     end
 
     private
 
+    def move_like_an_ant
+      block = @level.get_block_at(ant.x, ant.y)
+      blocks = @level.neighbors(block) << block
+      target = blocks.select { |b| b.walkable? }.sample
+      @target_x = rand(target.left..target.right)
+      @target_y = rand(target.top..target.bottom)
+    end
+
     def look_for_work
       if path = @work_manager.get_path_to_closest_block(ant.x, ant.y)
         ant.state = @state_factory.follow_path(ant, path)
-      end
-    end
-
-    def move_like_an_ant(delta)
-      if @move_time
-        @move_time -= delta
-        if @move_time >= 0.0
-          return
-        end
-      end
-
-      if rand(2) == 0
-        ant.move_left
-      else
-        ant.move_right
-      end
-      @move_time = rand(3.0..5.0)
-    end
-
-    def stay_in_level
-      if ant.left < @level.left
-        ant.move_right
-      elsif ant.right > @level.right
-        ant.move_left
       end
     end
 
