@@ -6,8 +6,10 @@ require_relative "../system/event_manager"
 require_relative "../system/object_repository"
 require_relative "../system/object_factory"
 require_relative "../system/input"
+require_relative "../system/renderer_factory"
 require_relative "../system/fill_renderer"
 require_relative "../system/outline_renderer"
+require_relative "../system/texture_renderer"
 require_relative "../ui/ui_manager"
 require_relative "../objects/zorder"
 
@@ -27,7 +29,7 @@ class Game
 
   def initialize
     srand
-    @show_fps = true
+    @show_fps = false
     @debug = false
     @last_time = Gosu::milliseconds
     @frames = 0
@@ -39,11 +41,17 @@ class Game
     @media = System::MediaManager.new
     @events = System::EventManager.new
     @input = System::Input.new(@window)
-    @ui = Ui::UiManager.new(@input)
     @font = @media.font(:default)
 
-    @outline = System::OutlineRenderer.new(@window)
-    @fill = System::FillRenderer.new(@window)
+    outline = System::OutlineRenderer.new(@window)
+    fill = System::FillRenderer.new(@window)
+    #texture = System::TextureRenderer.new(@window)
+
+    @render_fac = System::RendererFactory.new
+    @render_fac.register(Colony::Ant, fill)
+    @render_fac.register(Colony::Block, fill)
+    @render_fac.register(Colony::Ui::BlockSelector, outline)
+    @render_fac.register(Colony::Ui::WorkTracker, outline)
 
     @input.register(:kb_escape, self)
     @input.register(:kb_space, self)
@@ -60,6 +68,7 @@ class Game
     ant_state_factory = Colony::AntStateFactory.new(level, work_manager, @events)
     ant_fac = Colony::AntFactory.new(ant_state_factory)
 
+    @ui = Ui::UiManager.new(@input)
     @ui << Colony::Ui::BlockSelector.new(level, @events)
     @ui << Colony::Ui::WorkTracker.new(work_manager, level)
 
@@ -96,12 +105,12 @@ class Game
 
   def draw
     time = Gosu::milliseconds
-    @block_repo.all.each { |b| b.draw(@fill) }
-    @ant_repo.all.each { |a| a.draw(@fill) }
+    @block_repo.all.each { |b| b.draw(@render_fac) }
+    @ant_repo.all.each { |a| a.draw(@render_fac) }
 
     time2 = Gosu::milliseconds
     @od = (time2 - time) * 0.001
-    @ui.all.each { |u| u.draw(@outline) }
+    @ui.all.each { |u| u.draw(@render_fac) }
     @uid = (Gosu::milliseconds - time2) * 0.001
 
     @font.draw("FPS: #{@fps}", 10, @window.height - 20, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps

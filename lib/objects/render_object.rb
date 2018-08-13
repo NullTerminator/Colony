@@ -29,7 +29,8 @@ class RenderObject
     texture.update(delta) if texture && texture.respond_to?(:update)
   end
 
-  def draw(renderer)
+  def draw(renderer_fac)
+    renderer = renderer_fac.build(self.class)
     renderer.draw(self)
   end
 

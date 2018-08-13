@@ -38,10 +38,8 @@ module Colony
       #def on_mouse_out
       #end
 
-      def draw(renderer)
-        if @block && @block.workable?
-          renderer.draw(@block, color: color, z: z)
-        end
+      def draw(renderer_fac)
+        super if @block && @block.workable?
       end
 
     end
