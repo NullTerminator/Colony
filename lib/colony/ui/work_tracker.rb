@@ -6,8 +6,8 @@ module Colony
 
     class WorkTracker < ::Ui::UiObject
 
-      COLOR_REACHABLE = Gosu::Color::GREEN
-      COLOR_BLOCKED = Gosu::Color::RED
+      COLOR_REACHABLE = 0x2f_00ff00 #GREEN
+      COLOR_BLOCKED = 0x2f_ff0000 #RED
 
       def initialize(work_manager, level)
         super()

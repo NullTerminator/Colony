@@ -54,7 +54,7 @@ class Game
     @render_fac.register(Colony::Ant, fill)
     @render_fac.register(Colony::Block, fill)
     @render_fac.register(Colony::Ui::BlockSelector, outline)
-    @render_fac.register(Colony::Ui::WorkTracker, outline)
+    @render_fac.register(Colony::Ui::WorkTracker, fill)
     @render_fac.register(Colony::Ui::WorkCountTracker, text)
 
     @input.register(:kb_escape, self)
