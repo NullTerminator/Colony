@@ -42,6 +42,10 @@ module Colony
       @blocks.each { |b| yield b }
     end
 
+    def size
+      @blocks.size
+    end
+
     def get_path_to_block(block, x, y)
       start = @level.get_block_at(x, y)
       if @level.is_reachable?(block)

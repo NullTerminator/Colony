@@ -8,6 +8,7 @@ require_relative "../system/object_factory"
 require_relative "../system/input"
 require_relative "../system/renderer_factory"
 require_relative "../system/fill_renderer"
+require_relative "../system/font_renderer"
 require_relative "../system/outline_renderer"
 require_relative "../system/texture_renderer"
 require_relative "../ui/ui_manager"
@@ -22,6 +23,7 @@ require_relative 'objects/ant'
 require_relative 'objects/block'
 require_relative 'ui/block_selector'
 require_relative 'ui/work_tracker'
+require_relative 'ui/work_count_tracker'
 
 class Game
 
@@ -45,6 +47,7 @@ class Game
 
     outline = System::OutlineRenderer.new(@window)
     fill = System::FillRenderer.new(@window)
+    text = System::FontRenderer.new(@font)
     #texture = System::TextureRenderer.new(@window)
 
     @render_fac = System::RendererFactory.new
@@ -52,6 +55,7 @@ class Game
     @render_fac.register(Colony::Block, fill)
     @render_fac.register(Colony::Ui::BlockSelector, outline)
     @render_fac.register(Colony::Ui::WorkTracker, outline)
+    @render_fac.register(Colony::Ui::WorkCountTracker, text)
 
     @input.register(:kb_escape, self)
     @input.register(:kb_space, self)
@@ -71,6 +75,7 @@ class Game
     @ui = Ui::UiManager.new(@input)
     @ui << Colony::Ui::BlockSelector.new(level, @events)
     @ui << Colony::Ui::WorkTracker.new(work_manager, level)
+    @ui << Colony::Ui::WorkCountTracker.new(work_manager)
 
     Colony::UseCases.init(@events, @input, level, work_manager)
 
