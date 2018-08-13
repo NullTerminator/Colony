@@ -5,6 +5,7 @@ module Ui
 
     def initialize(input)
       super()
+
       input.register(:mouse_move, self)
       input.register(:mouse_left, self)
       input.register(:mouse_right, self)
@@ -13,9 +14,9 @@ module Ui
     def on_mouse_move(x, y, dx, dy)
       all.each do |o|
         hit = o.hit?(x, y)
-        if !o.hover && hit
+        if !o.hover? && hit
           o.on_mouse_over
-        elsif o.hover && !hit
+        elsif o.hover? && !hit
           o.on_mouse_out
         end
         o.on_mouse_move(x, y, dx, dy)

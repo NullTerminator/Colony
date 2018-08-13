@@ -9,6 +9,7 @@ module Ui
     def initialize
       super(ZOrder::UI)
       @hover = false
+      @mouse_down = false
     end
 
     def on_mouse_left(down, x, y)

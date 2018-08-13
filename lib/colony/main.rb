@@ -85,8 +85,8 @@ class Game
     calc_fps(delta) if @show_fps
 
     @input.update(delta)
-    @ant_repo.all.each { |obj| obj.update(@paused ? 0.0 : delta) }
     @block_repo.all.each { |obj| obj.update(delta) }
+    @ant_repo.all.each { |obj| obj.update(@paused ? 0.0 : delta) }
 
     time2 = Gosu::milliseconds
     @oup = (time2 - time) * 0.001
@@ -96,8 +96,8 @@ class Game
 
   def draw
     time = Gosu::milliseconds
-    @ant_repo.all.each { |a| a.draw(@fill) }
     @block_repo.all.each { |b| b.draw(@fill) }
+    @ant_repo.all.each { |a| a.draw(@fill) }
 
     time2 = Gosu::milliseconds
     @od = (time2 - time) * 0.001
