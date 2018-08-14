@@ -6,23 +6,30 @@ module Colony
 
   module Ui
 
-    class WorkCountTracker < ::Ui::UiObject
+    class DugCountTracker < ::Ui::UiObject
 
       attr_reader :text
 
-      def initialize(work_manager)
+      def initialize(eventer)
         super()
         @width = @height = 1
-        @work_manager = work_manager
         @color = Gosu::Color::WHITE
         @x = 10
-        @y = 30
+        @y = 50
+
+        @dug_count = 0
+
+        eventer.register(Events::Blocks::DUG, self)
       end
 
       def update(delta)
         super
 
-        @text = "WORK QUEUE: #{@work_manager.size}"
+        @text = "BLOCKS DUG: #{@dug_count}"
+      end
+
+      def on_block_dug(block)
+        @dug_count += 1
       end
 
     end

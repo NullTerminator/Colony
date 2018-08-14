@@ -1,3 +1,5 @@
+require 'gosu'
+
 require_relative '../../ui/ui_object'
 
 module Colony
@@ -6,8 +8,8 @@ module Colony
 
     class WorkTracker < ::Ui::UiObject
 
-      COLOR_REACHABLE = 0x2f_00ff00 #GREEN
-      COLOR_BLOCKED = 0x2f_ff0000 #RED
+      COLOR_REACHABLE = Gosu::Color.new(64, 0, 255, 0)
+      COLOR_BLOCKED = Gosu::Color.new(64, 255, 0, 0)
 
       def initialize(work_manager, level)
         super()

@@ -7,6 +7,8 @@ module Colony
     end
 
     module Ants
+      SPAWNED = :ant_spawned
+      KILLED = :ant_killed
     end
 
     module Work

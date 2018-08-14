@@ -24,6 +24,8 @@ require_relative 'objects/block'
 require_relative 'ui/block_selector'
 require_relative 'ui/work_tracker'
 require_relative 'ui/work_count_tracker'
+require_relative 'ui/ants_count_tracker'
+require_relative 'ui/dug_count_tracker'
 
 class Game
 
@@ -56,6 +58,8 @@ class Game
     @render_fac.register(Colony::Ui::BlockSelector, outline)
     @render_fac.register(Colony::Ui::WorkTracker, fill)
     @render_fac.register(Colony::Ui::WorkCountTracker, text)
+    @render_fac.register(Colony::Ui::AntsCountTracker, text)
+    @render_fac.register(Colony::Ui::DugCountTracker, text)
 
     @input.register(:kb_escape, self)
     @input.register(:kb_space, self)
@@ -70,12 +74,14 @@ class Game
     level = Colony::Level.new(block_fac, @block_repo, @window)
     work_manager = Colony::WorkManager.new(level, @events)
     ant_state_factory = Colony::AntStateFactory.new(level, work_manager, @events)
-    ant_fac = Colony::AntFactory.new(ant_state_factory)
+    ant_fac = Colony::AntFactory.new(ant_state_factory, @events)
 
     @ui = Ui::UiManager.new(@input)
     @ui << Colony::Ui::BlockSelector.new(level, @events)
     @ui << Colony::Ui::WorkTracker.new(work_manager, level)
     @ui << Colony::Ui::WorkCountTracker.new(work_manager)
+    @ui << Colony::Ui::AntsCountTracker.new(@events)
+    @ui << Colony::Ui::DugCountTracker.new(@events)
 
     Colony::UseCases.init(@events, @input, level, work_manager)
 
