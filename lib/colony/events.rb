@@ -18,6 +18,7 @@ module Colony
 
     module Blocks
       DUG = :block_dug
+      FILLED = :block_filled
     end
 
   end

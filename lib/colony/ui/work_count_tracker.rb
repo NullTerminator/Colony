@@ -22,7 +22,7 @@ module Colony
       def update(delta)
         super
 
-        @text = "WORK QUEUE: #{@work_manager.size}"
+        @text = "WORK QUEUE: #{@work_manager.count}"
       end
 
     end

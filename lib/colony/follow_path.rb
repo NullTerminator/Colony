@@ -7,15 +7,16 @@ module Colony
 
     attr_reader :path
 
-    def initialize(ant, eventer, path, work_manager, state_factory)
+    def initialize(ant, eventer, path_finder, work_manager, state_factory)
       super(ant, eventer)
-      self.path = path
+      self.path = path_finder
       @work_manager = work_manager
       @state_factory = state_factory
     end
 
-    def path=(new_path)
-      @path = new_path
+    def path=(new_path_finder)
+      @path = new_path_finder.path
+      @job = new_path_finder.job
       @target_block = path.last
       @path_index = 1
     end
@@ -38,26 +39,34 @@ module Colony
     end
 
     def on_block_dug(block)
-      if @target_block == block
-        ant.state = @state_factory.wander(ant)
-      end
+      wander_if_target_block block
     end
 
-    def on_work_added(block)
-      if new_path = @work_manager.get_path_to_block(block, ant.x, ant.y)
-        if new_path.length < (path.length - @path_index)
+    def on_block_filled(block)
+      wander_if_target_block block
+    end
+
+    def on_work_added(work_job)
+      if new_path = @work_manager.get_path_to_job(work_job, ant.x, ant.y)
+        if new_path.path.length < (path.length - @path_index)
           self.path = new_path
         end
       end
     end
 
-    def on_work_removed(block)
-      if @target_block == block
+    def on_work_removed(work_job)
+      if @job == work_job
         ant.state = @state_factory.wander(ant)
       end
     end
 
     private
+
+    def wander_if_target_block(block)
+      if @target_block == block
+        ant.state = @state_factory.wander(ant)
+      end
+    end
 
     def check_block_collision
       if next_block && ant.collide?(next_block)
@@ -71,7 +80,7 @@ module Colony
         ant.move
       else
         ant.stop
-        ant.state = @state_factory.dig_block(ant, @target_block)
+        ant.state = @state_factory.for_job(ant, @job)
       end
     end
 

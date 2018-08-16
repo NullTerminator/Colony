@@ -1,6 +1,9 @@
 require_relative 'wander'
 require_relative 'follow_path'
 require_relative 'dig_block'
+require_relative 'fill_block'
+
+require_relative 'job'
 
 module Colony
 
@@ -20,8 +23,21 @@ module Colony
       FollowPath.new(ant, @eventer, path, @work_manager, self)
     end
 
-    def dig_block(ant, block)
-      DigBlock.new(ant, @eventer, block, self)
+    def dig_block(ant, job)
+      DigBlock.new(ant, @eventer, @work_manager, job, self)
+    end
+
+    def fill_block(ant, job)
+      FillBlock.new(ant, @eventer, @work_manager, job, self)
+    end
+
+    def for_job(ant, job)
+      case job.task
+      when Job::TASK_DIG
+        dig_block(ant, job)
+      when Job::TASK_FILL
+        fill_block(ant, job)
+      end
     end
 
   end

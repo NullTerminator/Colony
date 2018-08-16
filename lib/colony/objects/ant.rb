@@ -4,12 +4,14 @@ require_relative '../../objects/zorder'
 require_relative '../../objects/movable'
 
 require_relative 'attacker'
+require_relative 'healer'
 
 module Colony
 
   class Ant < Movable
 
     include Attacker
+    include Healer
 
     attr_reader :state
 

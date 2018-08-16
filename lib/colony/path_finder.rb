@@ -2,13 +2,18 @@ module Colony
 
   class PathFinder
 
-    def initialize(start, target, level)
+    attr_reader :job
+
+    def initialize(start, job, level)
       @start = start
-      @target = target
+      @job = job
       @level = level
+      @found_path = nil
     end
 
     def path
+      return @found_path if @found_path
+
       been_there = {}
       pq = PriorityQueue.new
       pq << [1, [@start, [], 0]]
@@ -18,14 +23,14 @@ module Colony
         next if been_there[spot]
 
         new_path = path_so_far + [spot]
-        if spot == @target
-          return new_path
+        if spot == @job.block
+          return @found_path = new_path
         end
 
         been_there[spot] = true
 
         @level.neighbors(spot).each do |block|
-          next unless block.is_tunnel? || block.is_grass? || block == @target
+          next unless block.is_tunnel? || block.is_grass? || block == @job.block
           next if been_there[block]
 
           new_cost = cost_so_far + 1
@@ -40,7 +45,7 @@ module Colony
     private
 
     def distance_to_target(block)
-      (block.y - @target.y).abs + (block.x - @target.x).abs
+      (block.y - @job.block.y).abs + (block.x - @job.block.x).abs
     end
 
     class PriorityQueue
@@ -54,8 +59,8 @@ module Colony
         self
       end
 
-      def <<(pritem)
-        add(*pritem)
+      def <<(item)
+        add(*item)
       end
 
       def next

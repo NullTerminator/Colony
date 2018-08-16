@@ -3,7 +3,7 @@ require_relative 'events'
 
 module Colony
 
-  class DigBlock < AntState
+  class FillBlock < AntState
 
     def initialize(ant, eventer, work_manager, job, state_factory)
       super(ant, eventer)
@@ -49,10 +49,10 @@ module Colony
       end
       @attack_time = ant.attack_time
 
-      ant.attack(@target_block)
+      ant.heal(@target_block)
 
-      if @target_block.dead?
-        @eventer.trigger(Events::Blocks::DUG, @target_block)
+      if @target_block.is_full_health?
+        @eventer.trigger(Events::Blocks::FILLED, @target_block)
         @work_manager.remove(@job)
       end
     end

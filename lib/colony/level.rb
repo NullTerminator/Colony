@@ -1,5 +1,7 @@
 require_relative 'objects/block'
 
+require_relative 'path_finder'
+
 module Colony
 
   class Level

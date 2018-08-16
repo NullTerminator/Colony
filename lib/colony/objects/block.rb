@@ -17,44 +17,57 @@ module Colony
     COLOR_GRASS = Gosu::Color.argb(0xFF_228B22)
     COLOR_TUNNEL = Gosu::Color.argb(0xFF_00_00_00)
 
-    attr_reader :workable, :walkable, :health
+    attr_reader :digable, :fillable, :walkable
 
-    alias :workable? :workable
+    alias :digable? :digable
+    alias :fillable? :fillable
     alias :walkable? :walkable
 
     def initialize
       super(ZOrder::LEVEL)
       @width = @height = SIZE
-      @health = 10
+
+      @max_health = 10
     end
 
     def init
       super
+
       fill
+
       self
     end
 
     def grassify
       @y = bottom - height * 0.1
       @height = height * 0.2
-      @workable = false
+      @digable = false
+      @fillable = false
       @walkable = true
       @color = COLOR_GRASS
       @type = :grass
     end
 
     def fill
-      @workable = true
+      @digable = true
+      @fillable = false
       @walkable = false
       @color = COLOR_DIRT
       @type = :dirt
+      regenerate
     end
 
     def excavate
-      @workable = false
+      @digable = false
+      @fillable = true
       @walkable = true
       @color = COLOR_TUNNEL
       @type = :tunnel
+      @health = 0
+    end
+
+    def workable?
+      digable? || fillable?
     end
 
     def is_grass?

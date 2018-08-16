@@ -8,63 +8,65 @@ module Colony
     def initialize(level, eventer)
       @level = level
       @eventer = eventer
-      @blocks = []
+      @jobs = Set.new
     end
 
-    def add(block)
-      if block.workable?
-        @blocks << block
-        @eventer.trigger(Events::Work::ADDED, block)
+    def add(job)
+      if job.block.workable?
+        @jobs << job
+        @eventer.trigger(Events::Work::ADDED, job)
       end
     end
     alias :<< :add
 
-    def remove(block)
-      @blocks.delete(block)
-      @eventer.trigger(Events::Work::REMOVED, block)
+    def remove(job)
+      @jobs.delete(job)
+      @eventer.trigger(Events::Work::REMOVED, job)
     end
     alias :>> :remove
 
-    def toggle(block)
-      if @blocks.include?(block)
-        remove block
+    def toggle(job)
+      if @jobs.include?(job)
+        remove job
       else
-        add block
+        add job
       end
     end
 
     def clear
-      @blocks.each { |b| @eventer.trigger(Events::Work::REMOVED, b) }
-      @blocks = []
+      @jobs.each { |b| @eventer.trigger(Events::Work::REMOVED, b) }
+      @jobs = []
     end
 
-    def each_block
-      @blocks.each { |b| yield b }
+    def each_job
+      @jobs.each { |b| yield b }
     end
 
-    def size
-      @blocks.size
+    def count
+      @jobs.count
     end
 
-    def get_path_to_block(block, x, y)
+    def get_path_to_job(job, x, y)
       start = @level.get_block_at(x, y)
-      if @level.is_reachable?(block)
-        PathFinder.new(start, block, @level).path
+      if @level.is_reachable?(job.block)
+        pf = PathFinder.new(start, job, @level)
+        pf.path ? pf : nil
       end
     end
 
-    def get_path_to_closest_block(x, y)
+    def get_path_to_closest_job(x, y)
+      # TODO CRM: different priority levels on jobs
       start = @level.get_block_at(x, y)
-      reachable_blocks.map do |block|
-        PathFinder.new(start, block, @level).path
-      end.compact.sort_by(&:length).first
+      reachable_jobs.map do |job|
+        PathFinder.new(start, job, @level)
+      end.select(&:path).sort_by { |p| p.path.length }.first
     end
 
     private
 
-    def reachable_blocks
-      @blocks.select do |block|
-        @level.is_reachable?(block)
+    def reachable_jobs
+      @jobs.select do |job|
+        @level.is_reachable?(job.block)
       end
     end
 

@@ -10,7 +10,7 @@ module Colony
 
       input.register(:kb_c, self)
 
-      [Events::Blocks::DUG, Events::Ui::BLOCK_SELECTED].each do |e|
+      [Events::Blocks::DUG, Events::Blocks::FILLED].each do |e|
         eventer.register(e, self)
       end
     end
@@ -19,14 +19,13 @@ module Colony
       @work_manager.clear if down
     end
 
-    def self.on_block_selected(block)
-      @work_manager.toggle(block)
-    end
-
     def self.on_block_dug(block)
       block.excavate
-      @work_manager.remove(block)
       @level.neighbors(block).select { |b| b.is_grass? }.each(&:excavate)
+    end
+
+    def self.on_block_filled(block)
+      block.fill
     end
 
   end

@@ -21,9 +21,9 @@ module Colony
       def draw(renderer_fac)
         renderer = renderer_fac.build(self.class)
 
-        @work_manager.each_block do |block|
-          color = @level.is_reachable?(block) ? COLOR_REACHABLE : COLOR_BLOCKED
-          renderer.draw(block, color: color, z: z)
+        @work_manager.each_job do |job|
+          color = @level.is_reachable?(job.block) ? COLOR_REACHABLE : COLOR_BLOCKED
+          renderer.draw(job.block, color: color, z: z)
         end
       end
 

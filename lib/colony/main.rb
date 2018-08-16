@@ -16,6 +16,7 @@ require_relative "../objects/zorder"
 
 require_relative 'ant_factory'
 require_relative 'ant_state_factory'
+require_relative 'job_factory'
 require_relative 'level'
 require_relative 'use_cases'
 require_relative 'work_manager'
@@ -75,9 +76,10 @@ class Game
     work_manager = Colony::WorkManager.new(level, @events)
     ant_state_factory = Colony::AntStateFactory.new(level, work_manager, @events)
     ant_fac = Colony::AntFactory.new(ant_state_factory, @events)
+    job_factory = Colony::JobFactory.new(@events)
 
     @ui = Ui::UiManager.new(@input)
-    @ui << Colony::Ui::BlockSelector.new(level, @events)
+    @ui << Colony::Ui::BlockSelector.new(level, work_manager, job_factory, @events, @input)
     @ui << Colony::Ui::WorkTracker.new(work_manager, level)
     @ui << Colony::Ui::WorkCountTracker.new(work_manager)
     @ui << Colony::Ui::AntsCountTracker.new(@events)
@@ -85,7 +87,7 @@ class Game
 
     Colony::UseCases.init(@events, @input, level, work_manager)
 
-    15.times do
+    1.times do
       a = ant_fac.build
       a.x = rand(level.left..level.right)
       block = level.get_block_at(a.x, level.top + 1)
