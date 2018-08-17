@@ -22,6 +22,10 @@ module Colony
       @jobs[job.task].delete(job)
     end
 
+    def clear
+      @jobs.clear
+    end
+
     private
 
     def cached_job(block, task)

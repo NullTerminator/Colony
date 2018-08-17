@@ -46,6 +46,25 @@ module Colony
       n
     end
 
+    def get_blocks_in_rect(start_block, end_block)
+      start_col = get_column(start_block.x)
+      end_col = get_column(end_block.x)
+      col_dir = end_col >= start_col ? 1 : -1
+
+      start_row = get_row(start_block.y)
+      end_row = get_row(end_block.y)
+      row_dir = end_row >= start_row ? 1 : -1
+
+      blocks = []
+      start_col.step(end_col, col_dir) do |col|
+        start_row.step(end_row, row_dir) do |row|
+          blocks << @blocks[row][col]
+        end
+      end
+
+      blocks
+    end
+
     def hit?(posx, posy)
       posx >= left && posx <= right && posy >= top && posy <= bottom
     end

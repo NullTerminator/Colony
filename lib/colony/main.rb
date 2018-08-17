@@ -79,15 +79,15 @@ class Game
     job_factory = Colony::JobFactory.new(@events)
 
     @ui = Ui::UiManager.new(@input)
-    @ui << Colony::Ui::BlockSelector.new(level, work_manager, job_factory, @events, @input)
+    @ui << Colony::Ui::BlockSelector.new(level, work_manager, job_factory, @input)
     @ui << Colony::Ui::WorkTracker.new(work_manager, level)
     @ui << Colony::Ui::WorkCountTracker.new(work_manager)
     @ui << Colony::Ui::AntsCountTracker.new(@events)
     @ui << Colony::Ui::DugCountTracker.new(@events)
 
-    Colony::UseCases.init(@events, @input, level, work_manager)
+    Colony::UseCases.init(@events, @input, level, work_manager, job_factory)
 
-    1.times do
+    17.times do
       a = ant_fac.build
       a.x = rand(level.left..level.right)
       block = level.get_block_at(a.x, level.top + 1)

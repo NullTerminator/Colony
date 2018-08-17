@@ -12,16 +12,17 @@ module Colony
       MODE_DIG = :dig
       MODE_FILL = :fill
 
-      def initialize(level, work_manager, job_factory, eventer, input)
+      def initialize(level, work_manager, job_factory, input)
         super()
         @width = @height = Block::SIZE
         @color = Gosu::Color::WHITE
 
         @mode = MODE_DIG
-        #@batch = {}
+        @batch_start = nil
+        @batch = nil
+        @block = nil
 
         @level = level
-        @eventer = eventer
         @work_manager = work_manager
         @job_factory = job_factory
 
@@ -29,33 +30,58 @@ module Colony
       end
 
       def left_clicked
-        if block_is_good?
-          @eventer.trigger(Events::Ui::BLOCK_SELECTED, @block)
-          if @mode == MODE_DIG
-            job = @job_factory.dig(@block)
-          else
-            job = @job_factory.fill(@block)
-          end
-          @work_manager.toggle(job)
+        unless @batch
+          job = job_for_block(@block)
+          @work_manager.toggle(job) if job
         end
+      end
+
+      def on_mouse_left(down, x, y)
+        super
+
+        if @batch && !down
+          work_on_batch
+          @batch = nil
+          @batch_start = nil
+        end
+      end
+
+      def on_mouse_right(down, x, y)
+        @batch = nil
+        @batch_start = nil
+        @block = nil
       end
 
       def on_mouse_move(mx, my, dx, dy)
-        if @block = @level.get_block_at(mx, my)
+        block = @level.get_block_at(mx, my)
+        if block
+          if block_is_good?(@block) && (block != @block) && mouse_down?
+            if !@batch
+              @batch_start = @block
+            end
+          end
+
+          @block = block
           move_to(@block.x, @block.y)
 
-          #if mouse_down? && !@batch[@block]
-            #@batch[@block] = true
-            #@eventer.trigger(Events::Ui::BLOCK_SELECTED, @block)
-          #end
+          if @batch_start
+            @batch = @level.get_blocks_in_rect(@batch_start, @block).select { |b| block_is_good?(b) }
+          end
         end
       end
 
-      #def on_mouse_out
-      #end
+      def on_mouse_out
+      end
 
       def draw(renderer_fac)
-        super if block_is_good?
+        if @batch
+          renderer = renderer_fac.build(self.class)
+          @batch.each do |block|
+            renderer.draw(block)
+          end
+        elsif block_is_good?(@block)
+          super
+        end
       end
 
       def on_kb_f(down)
@@ -64,8 +90,25 @@ module Colony
 
       private
 
-      def block_is_good?
-        @block && ((@mode == MODE_DIG && @block.digable?) || (@mode == MODE_FILL && @block.fillable?))
+      def block_is_good?(block)
+        block && ((@mode == MODE_DIG && block.digable?) || (@mode == MODE_FILL && block.fillable?))
+      end
+
+      def job_for_block(block)
+        if block_is_good?(block)
+          if @mode == MODE_DIG
+            @job_factory.dig(block)
+          else
+            @job_factory.fill(block)
+          end
+        end
+      end
+
+      def work_on_batch
+        @batch.each do |block|
+          job = job_for_block(block)
+          @work_manager.add(job) if job
+        end
       end
 
       def toggle_mode

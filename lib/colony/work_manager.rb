@@ -5,6 +5,8 @@ module Colony
 
   class WorkManager
 
+    MAX_JOB_COUNT = 400
+
     def initialize(level, eventer)
       @level = level
       @eventer = eventer
@@ -12,9 +14,12 @@ module Colony
     end
 
     def add(job)
+      return if @jobs.length >= MAX_JOB_COUNT
+
       if job.block.workable?
+        added = !@jobs.include?(job)
         @jobs << job
-        @eventer.trigger(Events::Work::ADDED, job)
+        @eventer.trigger(Events::Work::ADDED, job) if added
       end
     end
     alias :<< :add
@@ -35,7 +40,7 @@ module Colony
 
     def clear
       @jobs.each { |b| @eventer.trigger(Events::Work::REMOVED, b) }
-      @jobs = []
+      @jobs = Set.new
     end
 
     def each_job
