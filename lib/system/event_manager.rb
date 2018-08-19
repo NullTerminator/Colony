@@ -7,14 +7,16 @@ module System
       @events = Hash.new { |h, k| h[k] = Set.new }
     end
 
-    def register(event, obj)
-      event = event.to_sym
-      @events[event] << obj
+    def register(events, obj)
+      Array(events).each do |event|
+        @events[event.to_sym] << obj
+      end
     end
 
-    def unregister(event, obj)
-      event = event.to_sym
-      @events[event].delete(obj)
+    def unregister(events, obj)
+      Array(events).each do |event|
+        @events[event.to_sym].delete(obj)
+      end
     end
 
     def trigger(event, *args)
