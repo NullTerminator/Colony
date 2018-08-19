@@ -4,6 +4,8 @@ module Colony
 
   class Wander < AntState
 
+    LFW_PERIOD = 0.25
+
     attr_reader :ant
 
     def initialize(ant, eventer, level, work_manager, state_factory)
@@ -11,6 +13,7 @@ module Colony
       @level = level
       @work_manager = work_manager
       @state_factory = state_factory
+      @lfw_timer = 0.0
     end
 
     def update(delta)
@@ -23,7 +26,8 @@ module Colony
         ant.move(ant.speed * 0.6)
       end
 
-      look_for_work
+      @lfw_timer += delta
+      look_for_work if @lfw_timer >= LFW_PERIOD
     end
 
     private
