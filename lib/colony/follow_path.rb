@@ -25,12 +25,16 @@ module Colony
       eventer.register(Events::Work::ADDED, self)
       eventer.register(Events::Work::REMOVED, self)
       eventer.register(Events::Blocks::DUG, self)
+
+      eventer.trigger(Events::Ants::WALK_START, ant)
     end
 
     def exit
       eventer.unregister(Events::Work::ADDED, self)
       eventer.unregister(Events::Work::REMOVED, self)
       eventer.unregister(Events::Blocks::DUG, self)
+
+      eventer.trigger(Events::Ants::WALK_END, ant)
     end
 
     def update(delta)

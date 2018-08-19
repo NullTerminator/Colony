@@ -17,11 +17,15 @@ module Colony
       @attack_time = 0.0
       eventer.register(Events::Blocks::DUG, self)
       eventer.register(Events::Work::REMOVED, self)
+
+      eventer.trigger(Events::Ants::FILL_START, ant)
     end
 
     def exit
       eventer.unregister(Events::Blocks::DUG, self)
       eventer.unregister(Events::Work::REMOVED, self)
+
+      eventer.trigger(Events::Ants::FILL_END, ant)
     end
 
     def update(delta)
