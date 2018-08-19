@@ -99,7 +99,10 @@ module System
         Gosu::Sample.new(*args)
       end
       {
-        beep: l("Beep.wav")
+        beep: l("Beep.wav"),
+        ant_walk: l("ant_walk_1.mp3"),
+        ant_dig: l("ant_dig.mp3"),
+        ant_fill: l("ant_fill.mp3"),
       }
     end
 

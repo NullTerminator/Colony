@@ -18,6 +18,7 @@ require_relative 'ant_factory'
 require_relative 'ant_state_factory'
 require_relative 'job_factory'
 require_relative 'level'
+require_relative 'sound_effects_manager'
 require_relative 'use_cases'
 require_relative 'work_manager'
 require_relative 'objects/ant'
@@ -86,6 +87,7 @@ class Game
     @ui << Colony::Ui::DugCountTracker.new(@events)
 
     Colony::UseCases.init(@events, @input, level, work_manager, job_factory)
+    Colony::SoundEffectsManager.init(@events, @media)
 
     17.times do
       a = ant_fac.build
