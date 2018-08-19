@@ -59,10 +59,10 @@ module Colony
       end
     end
 
-    def get_path_to_closest_job(x, y)
+    def get_path_to_closest_available_job(x, y)
       # TODO CRM: different priority levels on jobs
       start = @level.get_block_at(x, y)
-      reachable_jobs.map do |job|
+      reachable_jobs.select(&:needs_work?).map do |job|
         PathFinder.new(start, job, @level)
       end.select(&:path).sort_by { |p| p.path.length }.first
     end

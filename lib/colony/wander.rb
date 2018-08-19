@@ -37,7 +37,7 @@ module Colony
     end
 
     def look_for_work
-      if path = @work_manager.get_path_to_closest_job(ant.x, ant.y)
+      if path = @work_manager.get_path_to_closest_available_job(ant.x, ant.y)
         ant.state = @state_factory.follow_path(ant, path)
       end
     end

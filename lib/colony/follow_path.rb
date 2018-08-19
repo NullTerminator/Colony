@@ -40,6 +40,10 @@ module Colony
     def update(delta)
       move_to_next_block
       check_block_collision
+
+      if @job.is_full? && !@job.is_working?(ant)
+        ant.state = @state_factory.wander(ant)
+      end
     end
 
     def on_block_dug(block)
@@ -85,6 +89,7 @@ module Colony
       else
         ant.stop
         ant.state = @state_factory.for_job(ant, @job)
+        @job.add(ant)
       end
     end
 
