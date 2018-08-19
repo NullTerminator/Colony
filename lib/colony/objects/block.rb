@@ -23,7 +23,6 @@ module Colony
     def initialize
       super(ZOrder::LEVEL)
       @width = @height = SIZE
-      @color = Gosu::Color::WHITE
 
       @max_health = 10
     end
@@ -35,7 +34,7 @@ module Colony
       @fillable = false
       @walkable = true
       @type = :grass
-      show
+      @color = Gosu::Color::WHITE
     end
 
     def fill
@@ -44,16 +43,16 @@ module Colony
       @walkable = false
       @type = :dirt
       regenerate
-      show
+      @color = Gosu::Color::WHITE
     end
 
     def excavate
       @digable = false
       @fillable = true
       @walkable = true
-      hide
       @type = :tunnel
       @health = 0
+      @color = Gosu::Color.new(0x00_000000)
     end
 
     def workable?
