@@ -84,11 +84,11 @@ class RenderObject
   end
 
   def width
-    Float(@width || texture.width) * scale_x
+    @width * scale_x
   end
 
   def height
-    Float(@height || texture.height) * scale_y
+    @height * scale_y
   end
 
   def collide?(other)

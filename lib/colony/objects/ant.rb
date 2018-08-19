@@ -17,8 +17,8 @@ module Colony
 
     def initialize
       super(ZOrder::PLAYER)
-      @color = Gosu::Color::RED
-      @width = @height = 7.0
+      @width = @height = 17.0
+      @color = Gosu::Color::WHITE
     end
 
     def init

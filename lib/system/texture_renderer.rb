@@ -9,7 +9,7 @@ module System
       if obj.visible?
         color = opts[:color] || obj.color
         z = opts[:z] || obj.z
-        obj.texture.draw_rot(obj.x, obj.y, z, obj.angle, 0.5, 0.5, obj.scale_x, obj.scale_y, color)
+        obj.texture.draw_rot(obj.x, obj.y, z, obj.angle, 0.5, 0.5, obj.width / obj.texture.width, obj.height / obj.texture.height, color)
       end
     end
 

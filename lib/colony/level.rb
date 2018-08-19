@@ -92,17 +92,18 @@ module Colony
 
         COLS.times do |col_i|
           block_left = left + (col_i * Block::SIZE)
-          block_top = top + (row_i * Block::SIZE)
+          block_bottom = top + (row_i * Block::SIZE) + Block::SIZE
 
-          block = @block_factory.build
+          block = if col_i == 40
+                    @block_factory.tunnel
+                  elsif row_i == 0
+                    @block_factory.grass
+                  else
+                    @block_factory.dirt
+                  end
           block.left = block_left
-          block.top = block_top
+          block.bottom = block_bottom
 
-          if col_i == 40
-            block.excavate
-          elsif row_i == 0
-            block.grassify
-          end
 
           @block_repo << block
           row << block

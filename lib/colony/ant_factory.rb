@@ -5,16 +5,18 @@ module Colony
 
   class AntFactory < System::CachingFactory
 
-    def initialize(state_factory, eventer)
+    def initialize(state_factory, media, eventer)
       super(Ant)
 
       @state_fac = state_factory
       @eventer = eventer
+      @media = media
     end
 
     def build
       ant = super
       ant.state = @state_fac.wander(ant)
+      ant.texture = @media.image(:ant)
 
       @eventer.trigger(Events::Ants::SPAWNED, ant)
 

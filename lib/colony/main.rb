@@ -16,6 +16,7 @@ require_relative "../objects/zorder"
 
 require_relative 'ant_factory'
 require_relative 'ant_state_factory'
+require_relative 'block_factory'
 require_relative 'job_factory'
 require_relative 'level'
 require_relative 'sound_effects_manager'
@@ -52,11 +53,11 @@ class Game
     outline = System::OutlineRenderer.new(@window)
     fill = System::FillRenderer.new(@window)
     text = System::FontRenderer.new(@font)
-    #texture = System::TextureRenderer.new(@window)
+    tex_renderer = System::TextureRenderer.new(@window)
 
     @render_fac = System::RendererFactory.new
-    @render_fac.register(Colony::Ant, fill)
-    @render_fac.register(Colony::Block, fill)
+    @render_fac.register(Colony::Ant, tex_renderer)
+    @render_fac.register(Colony::Block, tex_renderer)
     @render_fac.register(Colony::Ui::BlockSelector, outline)
     @render_fac.register(Colony::Ui::WorkTracker, fill)
     @render_fac.register(Colony::Ui::WorkCountTracker, text)
@@ -72,11 +73,11 @@ class Game
     @block_repo = System::ObjectRepository.new
     @ant_repo = System::ObjectRepository.new
 
-    block_fac = System::ObjectFactory.new(Colony::Block)
+    block_fac = Colony::BlockFactory.new(@media)
     level = Colony::Level.new(block_fac, @block_repo, @window)
     work_manager = Colony::WorkManager.new(level, @events)
     ant_state_factory = Colony::AntStateFactory.new(level, work_manager, @events)
-    ant_fac = Colony::AntFactory.new(ant_state_factory, @events)
+    ant_fac = Colony::AntFactory.new(ant_state_factory, @media, @events)
     job_factory = Colony::JobFactory.new(@events)
 
     @ui = Ui::UiManager.new(@input)

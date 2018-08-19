@@ -70,6 +70,9 @@ module System
         Gosu::Image.new("media/images/#{source}", options)
       end
       {
+        ant: l("red_ant.png"),
+        dirt: l("dirt.png", tileable: true),
+        grass: l("grass.png")
         #Objects
         #player: l("Player.png"),
         #bullet: l("Bullet.png"),
