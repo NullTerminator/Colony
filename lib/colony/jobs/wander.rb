@@ -1,4 +1,4 @@
-require_relative 'ant_state'
+require_relative '../ant_state'
 
 module Colony
 

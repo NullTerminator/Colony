@@ -1,5 +1,5 @@
-require_relative 'ant_state'
-require_relative 'events'
+require_relative '../ant_state'
+require_relative '../events'
 
 module Colony
 

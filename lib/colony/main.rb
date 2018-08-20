@@ -17,7 +17,7 @@ require_relative "../objects/zorder"
 require_relative 'ant_factory'
 require_relative 'ant_state_factory'
 require_relative 'block_factory'
-require_relative 'job_factory'
+require_relative 'jobs/job_factory'
 require_relative 'level'
 require_relative 'sound_effects_manager'
 require_relative 'use_cases'

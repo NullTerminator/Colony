@@ -1,9 +1,9 @@
-require_relative 'wander'
-require_relative 'follow_path'
-require_relative 'dig_block'
-require_relative 'fill_block'
+require_relative 'jobs/wander'
+require_relative 'jobs/follow_path'
+require_relative 'jobs/dig_block'
+require_relative 'jobs/fill_block'
 
-require_relative 'job'
+require_relative 'jobs/job'
 
 module Colony
 

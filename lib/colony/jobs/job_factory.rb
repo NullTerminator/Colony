@@ -1,4 +1,4 @@
-require_relative 'events'
+require_relative '../events'
 require_relative 'job'
 
 module Colony
