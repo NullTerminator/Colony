@@ -44,7 +44,7 @@ class RenderObject
   end
 
   def look_at_pos(pos_x, pos_y)
-    self.angle = Gosu::angle(x, y, pos_x, pos_y)
+    self.angle = Gosu.angle(x, y, pos_x, pos_y)
   end
 
   def color_gl
@@ -89,6 +89,14 @@ class RenderObject
 
   def height
     @height * scale_y
+  end
+
+  def front_x
+    x + Gosu.offset_x(angle, height * 0.5)
+  end
+
+  def front_y
+    y + Gosu.offset_y(angle, height * 0.5)
   end
 
   def collide?(other)

@@ -4,11 +4,12 @@ module Colony
 
   class UseCases
 
-    def self.init(eventer, input, level, work_manager, job_factory, scrolling_text_manager)
+    def self.init(eventer, input, level, work_manager, job_factory, scrolling_text_manager, particles)
       @level = level
       @work_manager = work_manager
       @job_factory = job_factory
       @scrolling_text_manager = scrolling_text_manager
+      @particles = particles
 
       input.register(:kb_c, self)
 
@@ -31,8 +32,9 @@ module Colony
       block.fill
     end
 
-    def self.on_block_attacked(block, damage)
-      @scrolling_text_manager.add(damage.to_s, block, Gosu::Color::RED)
+    def self.on_block_attacked(ant, block, damage)
+      #@scrolling_text_manager.add(damage.to_s, block, Gosu::Color::RED)
+      @particles.dirt_spray(ant.front_x, ant.front_y, ant.angle - 180.0)
     end
 
   end

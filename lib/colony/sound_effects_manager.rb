@@ -7,10 +7,11 @@ module Colony
     EVENTS = [
       Events::Ants::WALK_START,
       Events::Ants::WALK_END,
-      Events::Ants::DIG_START,
-      Events::Ants::DIG_END,
+      #Events::Ants::DIG_START,
+      #Events::Ants::DIG_END,
       Events::Ants::FILL_START,
-      Events::Ants::FILL_END
+      Events::Ants::FILL_END,
+      Events::Blocks::ATTACKED
     ]
 
     def self.init(eventer, media)
@@ -21,20 +22,24 @@ module Colony
     end
 
     def self.on_ant_walk_start(ant)
-      @sounds[ant][:ant_walk] = @media.sound(:ant_walk).play(0.1, 1, true)
+      @sounds[ant][:ant_walk] = @media.sound(:ant_walk).play(0.2, 1, true)
     end
 
     def self.on_ant_walk_end(ant)
       @sounds[ant].delete(:ant_walk).stop
     end
 
-    def self.on_ant_dig_start(ant)
-      @sounds[ant][:ant_dig] = @media.sound(:ant_dig).play(1, 1, true)
+    def self.on_block_attacked(ant, block, damage)
+      @media.sound(:ant_dig).play(1, 1, false)
     end
 
-    def self.on_ant_dig_end(ant)
-      @sounds[ant].delete(:ant_dig).stop
-    end
+    #def self.on_ant_dig_start(ant)
+      #@sounds[ant][:ant_dig] = @media.sound(:ant_dig).play(1, 1, true)
+    #end
+
+    #def self.on_ant_dig_end(ant)
+      #@sounds[ant].delete(:ant_dig)&.stop
+    #end
 
     def self.on_ant_fill_start(ant)
       @sounds[ant][:ant_fill] = @media.sound(:ant_fill).play(1, 1, true)

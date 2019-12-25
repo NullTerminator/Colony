@@ -22,8 +22,10 @@ require_relative 'level'
 require_relative 'sound_effects_manager'
 require_relative 'use_cases'
 require_relative 'work_manager'
+require_relative 'particle_system'
 require_relative 'objects/ant'
 require_relative 'objects/block'
+require_relative 'objects/particle'
 require_relative 'ui/block_selector'
 require_relative 'ui/work_tracker'
 require_relative 'ui/work_count_tracker'
@@ -59,6 +61,7 @@ class Game
     @render_fac = System::RendererFactory.new
     @render_fac.register(Colony::Ant, tex_renderer)
     @render_fac.register(Colony::Block, tex_renderer)
+    @render_fac.register(Colony::Particle, fill)
     @render_fac.register(Colony::Ui::BlockSelector, outline)
     @render_fac.register(Colony::Ui::WorkTracker, fill)
     @render_fac.register(Colony::Ui::WorkCountTracker, text)
@@ -74,6 +77,7 @@ class Game
   def init
     @block_repo = System::ObjectRepository.new
     @ant_repo = System::ObjectRepository.new
+    @particles = Colony::ParticleSystem.new
 
     block_factory = Colony::BlockFactory.new(@media)
     level = Colony::Level.new(block_factory, @block_repo, @window)
@@ -91,7 +95,7 @@ class Game
     scrolling_text_manager = Colony::Ui::ScrollingTextManager.new
     @ui << scrolling_text_manager
 
-    Colony::UseCases.init(@events, @input, level, work_manager, job_factory, scrolling_text_manager)
+    Colony::UseCases.init(@events, @input, level, work_manager, job_factory, scrolling_text_manager, @particles)
     Colony::SoundEffectsManager.init(@events, @media)
 
     17.times do
@@ -116,6 +120,7 @@ class Game
     @input.update(delta)
     @block_repo.all.each { |obj| obj.update(delta) }
     @ant_repo.all.each { |obj| obj.update(@paused ? 0.0 : delta) }
+    @particles.update(delta)
 
     time2 = Gosu::milliseconds
     @oup = (time2 - time) * 0.001
@@ -127,6 +132,7 @@ class Game
     time = Gosu::milliseconds
     @block_repo.all.each { |b| b.draw(@render_fac) }
     @ant_repo.all.each { |a| a.draw(@render_fac) }
+    @particles.draw(@render_fac)
 
     time2 = Gosu::milliseconds
     @od = (time2 - time) * 0.001

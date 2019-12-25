@@ -5,7 +5,7 @@ module Colony
     TASK_DIG = :dig
     TASK_FILL = :fill
 
-    attr_reader :ants, :block, :task, :current_workers, :max_workers
+    attr_reader :ants, :block, :task, :max_workers
 
     def initialize(block, task, max_workers=2)
       @block = block

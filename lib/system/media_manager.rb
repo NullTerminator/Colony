@@ -97,14 +97,13 @@ module System
     end
 
     def load_sounds
-      def l(*args)
-        args[0] = "media/sounds/#{args[0]}"
-        Gosu::Sample.new(*args)
+      def l(fname)
+        Gosu::Sample.new("media/sounds/#{fname}")
       end
       {
         beep: l("Beep.wav"),
         ant_walk: l("ant_walk_1.mp3"),
-        ant_dig: l("ant_dig.mp3"),
+        ant_dig: l("ant_dig.m4a"),
         ant_fill: l("ant_fill.mp3"),
       }
     end
