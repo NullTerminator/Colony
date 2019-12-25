@@ -21,20 +21,23 @@ module Colony
 
         eventer.register(Events::Ants::SPAWNED, self)
         eventer.register(Events::Ants::KILLED, self)
-      end
-
-      def update(delta)
-        super
-
-        @text = "ANTS: #{@ants_count}"
+        set_text
       end
 
       def on_ant_spawned(ant)
         @ants_count += 1
+        set_text
       end
 
       def on_ant_killed(ant)
         @ants_count -= 1
+        set_text
+      end
+
+      private
+
+      def set_text
+        @text = "ANTS: #{@ants_count}"
       end
 
     end

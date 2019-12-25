@@ -7,7 +7,7 @@ module Colony
     end
 
     def attack_time
-      @attack_time ||= 0.13
+      @attack_time ||= 1.0
     end
 
     def attack(target)

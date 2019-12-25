@@ -4,14 +4,15 @@ module Colony
 
   class UseCases
 
-    def self.init(eventer, input, level, work_manager, job_factory)
+    def self.init(eventer, input, level, work_manager, job_factory, scrolling_text_manager)
       @level = level
       @work_manager = work_manager
       @job_factory = job_factory
+      @scrolling_text_manager = scrolling_text_manager
 
       input.register(:kb_c, self)
 
-      [Events::Blocks::DUG, Events::Blocks::FILLED].each do |e|
+      [Events::Blocks::DUG, Events::Blocks::FILLED, Events::Blocks::ATTACKED].each do |e|
         eventer.register(e, self)
       end
     end
@@ -28,6 +29,10 @@ module Colony
 
     def self.on_block_filled(block)
       block.fill
+    end
+
+    def self.on_block_attacked(block, damage)
+      @scrolling_text_manager.add(damage.to_s, block, Gosu::Color::RED)
     end
 
   end

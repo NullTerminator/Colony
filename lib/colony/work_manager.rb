@@ -10,17 +10,17 @@ module Colony
     def initialize(level, eventer)
       @level = level
       @eventer = eventer
+
       @jobs = Set.new
     end
 
     def add(job)
       return if @jobs.length >= MAX_JOB_COUNT
+      return unless job.block.workable?
 
-      if job.block.workable?
-        added = !@jobs.include?(job)
-        @jobs << job
-        @eventer.trigger(Events::Work::ADDED, job) if added
-      end
+      added = !@jobs.include?(job)
+      @jobs << job
+      @eventer.trigger(Events::Work::ADDED, job) if added
     end
     alias :<< :add
 

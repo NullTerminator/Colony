@@ -24,7 +24,8 @@ module Colony
     def init
       super
       @speed = rand(30.0..50.0)
-      @damage = 1
+      @damage = rand(1..2)
+      @attack_time = rand(1.0..1.3)
     end
 
     def state=(new_state)

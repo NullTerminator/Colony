@@ -25,6 +25,7 @@ module Colony
     module Blocks
       DUG = :block_dug
       FILLED = :block_filled
+      ATTACKED = :block_attacked
     end
 
   end

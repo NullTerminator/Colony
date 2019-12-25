@@ -53,7 +53,8 @@ module Colony
       end
       @attack_time = ant.attack_time
 
-      ant.attack(@target_block)
+      damage = ant.attack(@target_block)
+      @eventer.trigger(Events::Blocks::ATTACKED, @target_block, damage)
 
       if @target_block.dead?
         @eventer.trigger(Events::Blocks::DUG, @target_block)

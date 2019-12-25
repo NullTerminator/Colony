@@ -9,13 +9,15 @@ module Colony
       regenerate
     end
 
-    # TODO CRM: should this return the amount healed?
     def heal(amount)
+      pre_heal = @health
       @health += amount
+
       if health > max_health
         health = max_health
       end
-      health
+
+      @health - pre_heal
     end
 
     def regenerate
@@ -34,13 +36,15 @@ module Colony
       health == 0
     end
 
-    # TODO CRM: should this return the damage dealt?
     def attacked(damage)
+      pre_damage = @health
       @health -= damage
+
       if @health < 0
         @health = 0
       end
-      @health
+
+      pre_damage - @health
     end
 
   end
