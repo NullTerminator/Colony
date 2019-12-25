@@ -67,6 +67,13 @@ module Colony
       end.select(&:path).sort_by { |p| p.path.length }.first
     end
 
+    def get_paths_to_jobs_from(x, y)
+      start = @level.get_block_at(x, y)
+      reachable_jobs.select(&:needs_work?).map do |job|
+        PathFinder.new(start, job, @level)
+      end.select(&:path).sort_by { |p| p.path.length }
+    end
+
     private
 
     def reachable_jobs

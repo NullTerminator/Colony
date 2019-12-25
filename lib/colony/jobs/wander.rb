@@ -1,3 +1,4 @@
+require_relative '../../timer'
 require_relative '../ant_state'
 
 module Colony
@@ -13,7 +14,8 @@ module Colony
       @level = level
       @work_manager = work_manager
       @state_factory = state_factory
-      @lfw_timer = 0.0
+
+      @lfw_timer = Timer.new(LFW_PERIOD) { look_for_work }
     end
 
     def update(delta)
@@ -26,8 +28,7 @@ module Colony
         ant.move(ant.speed * 0.6)
       end
 
-      @lfw_timer += delta
-      look_for_work if @lfw_timer >= LFW_PERIOD
+      @lfw_timer.update(delta)
     end
 
     private

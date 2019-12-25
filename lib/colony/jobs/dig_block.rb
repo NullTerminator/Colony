@@ -1,3 +1,4 @@
+require_relative '../../timer'
 require_relative '../ant_state'
 require_relative '../events'
 
@@ -14,7 +15,7 @@ module Colony
     end
 
     def enter
-      @attack_time = 0.0
+      @dig_timer = Timer.new(ant.attack_time) { attack_target }
       eventer.register(Events::Blocks::DUG, self)
       eventer.register(Events::Work::REMOVED, self)
 
@@ -29,7 +30,7 @@ module Colony
     end
 
     def update(delta)
-      attack_target(delta)
+      @dig_timer.update(delta)
     end
 
     def on_block_dug(block)
@@ -46,13 +47,7 @@ module Colony
 
     private
 
-    def attack_target(delta)
-      @attack_time -= delta
-      if @attack_time > 0.0
-        return
-      end
-      @attack_time = ant.attack_time
-
+    def attack_target
       damage = ant.attack(@target_block)
       @eventer.trigger(Events::Blocks::ATTACKED, @target_block, damage)
 
