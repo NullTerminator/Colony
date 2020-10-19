@@ -9,9 +9,9 @@ module System
       @game = game
     end
 
-    def needs_cursor?
-      true
-    end
+    #def needs_cursor?
+      #true
+    #end
 
     def update
       @game.update

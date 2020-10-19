@@ -72,7 +72,9 @@ module System
       {
         ant: l("red_ant.png"),
         dirt: l("dirt.png", tileable: true),
-        grass: l("grass.png")
+        grass: l("grass.png"),
+        cursor_shovel: l('shovel.png'),
+        cursor_arrow: l('cursor_arrow.png')
         #Objects
         #player: l("Player.png"),
         #bullet: l("Bullet.png"),

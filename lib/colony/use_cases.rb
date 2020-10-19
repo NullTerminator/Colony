@@ -33,7 +33,7 @@ module Colony
     end
 
     def self.on_block_attacked(ant, block, damage)
-      #@scrolling_text_manager.add(damage.to_s, block, Gosu::Color::RED)
+      @scrolling_text_manager.add(damage.to_s, block, Gosu::Color::RED)
       @particles.dirt_spray(ant.front_x, ant.front_y, ant.angle - 180.0)
     end
 

@@ -2,6 +2,8 @@ module Colony
 
   module Attacker
 
+    attr_writer :damage, :attack_time
+
     def damage
       @damage || 1
     end

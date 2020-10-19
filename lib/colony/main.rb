@@ -21,6 +21,7 @@ require_relative 'jobs/job_factory'
 require_relative 'level'
 require_relative 'sound_effects_manager'
 require_relative 'use_cases'
+require_relative 'network'
 require_relative 'work_manager'
 require_relative 'particle_system'
 require_relative 'objects/ant'
@@ -32,6 +33,7 @@ require_relative 'ui/work_count_tracker'
 require_relative 'ui/ants_count_tracker'
 require_relative 'ui/dug_count_tracker'
 require_relative 'ui/scrolling_text_manager'
+require_relative 'ui/cursor'
 
 class Game
 
@@ -68,6 +70,7 @@ class Game
     @render_fac.register(Colony::Ui::AntsCountTracker, text)
     @render_fac.register(Colony::Ui::DugCountTracker, text)
     @render_fac.register(Colony::Ui::ScrollingTextManager, text)
+    @render_fac.register(Colony::Ui::Cursor, tex_renderer)
 
     @input.register(:kb_escape, self)
     @input.register(:kb_space, self)
@@ -92,11 +95,13 @@ class Game
     @ui << Colony::Ui::WorkCountTracker.new(work_manager)
     @ui << Colony::Ui::AntsCountTracker.new(@events)
     @ui << Colony::Ui::DugCountTracker.new(@events)
+    @ui << Colony::Ui::Cursor.new(@input, level, @media)
     scrolling_text_manager = Colony::Ui::ScrollingTextManager.new
     @ui << scrolling_text_manager
 
     Colony::UseCases.init(@events, @input, level, work_manager, job_factory, scrolling_text_manager, @particles)
     Colony::SoundEffectsManager.init(@events, @media)
+    Colony::Network.init(@events)
 
     17.times do
       a = ant_fac.build

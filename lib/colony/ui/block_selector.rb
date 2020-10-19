@@ -41,8 +41,6 @@ module Colony
 
         if @batch && !down
           work_on_batch
-          @batch = nil
-          @batch_start = nil
         end
       end
 
@@ -67,6 +65,11 @@ module Colony
           if @batch_start
             @batch = @level.get_blocks_in_rect(@batch_start, @block).select { |b| block_is_good?(b) }
           end
+        else
+          @block = nil
+          @batch = nil
+          @batch_start = nil
+          @mouse_down = false
         end
       end
 
@@ -109,6 +112,8 @@ module Colony
           job = job_for_block(block)
           @work_manager.add(job) if job
         end
+        @batch = nil
+        @batch_start = nil
       end
 
       def toggle_mode

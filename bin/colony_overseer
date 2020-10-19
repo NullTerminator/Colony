@@ -2,9 +2,9 @@
 
 require 'bundler'
 Bundler.require(:default)
-require_relative "../lib/colony/main"
+require_relative "../lib/colony/overseer"
 
-game = Game.new
+game = Overseer.new
 game.show_fps = ARGV.include? "fps"
 game.debug = ARGV.include? "debug"
 game.show_objects = ARGV.include? "show_objects"

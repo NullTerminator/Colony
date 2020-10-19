@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 gem 'gosu'
 
+gem 'pub_sub', path: '../pub_sub'
+
 group :development do
   gem 'pry-byebug'
 end
