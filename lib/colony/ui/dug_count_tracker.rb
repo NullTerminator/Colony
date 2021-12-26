@@ -1,18 +1,13 @@
-require 'gosu'
-
-require_relative '../../ui/ui_object'
-
 module Colony
 
   module Ui
 
-    class DugCountTracker < ::Ui::UiObject
+    class DugCountTracker < Wankel::Ui::UiObject
 
       attr_reader :text
 
       def initialize(eventer)
-        super()
-        @width = @height = 1
+        super(1, 1)
         @color = Gosu::Color::WHITE
         @x = 10
         @y = 50

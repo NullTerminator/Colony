@@ -1,19 +1,3 @@
-require "gosu"
-
-require_relative "../window"
-require_relative "../system/media_manager"
-require_relative "../system/event_manager"
-require_relative "../system/object_repository"
-require_relative "../system/object_factory"
-require_relative "../system/input"
-require_relative "../system/renderer_factory"
-require_relative "../system/fill_renderer"
-require_relative "../system/font_renderer"
-require_relative "../system/outline_renderer"
-require_relative "../system/texture_renderer"
-require_relative "../ui/ui_manager"
-require_relative "../objects/zorder"
-
 require_relative 'ant_factory'
 require_relative 'ant_state_factory'
 require_relative 'block_factory'
@@ -23,10 +7,8 @@ require_relative 'sound_effects_manager'
 require_relative 'use_cases'
 require_relative 'network'
 require_relative 'work_manager'
-require_relative 'particle_system'
 require_relative 'objects/ant'
 require_relative 'objects/block'
-require_relative 'objects/particle'
 require_relative 'ui/block_selector'
 require_relative 'ui/work_tracker'
 require_relative 'ui/work_count_tracker'
@@ -48,22 +30,21 @@ class Game
     @frame_time = 0.0
     @fps = 0
 
-    @window = System::Window.new(self)
-    @window.caption = "THE COLONY"
-    @media = System::MediaManager.new
-    @events = System::EventManager.new
-    @input = System::Input.new(@window)
+    @window = Wankel::Window.new('THE COLONY', self, needs_cursor: false)
+    @media = Wankel::MediaManager.new
+    @events = Wankel::EventManager.new
+    @input = Wankel::Input.new(@window)
     @font = @media.font(:default)
 
-    outline = System::OutlineRenderer.new(@window)
-    fill = System::FillRenderer.new(@window)
-    text = System::FontRenderer.new(@font)
-    tex_renderer = System::TextureRenderer.new(@window)
+    outline = Wankel::OutlineRenderer.new(@window)
+    fill = Wankel::FillRenderer.new(@window)
+    text = Wankel::FontRenderer.new(@font)
+    tex_renderer = Wankel::TextureRenderer.new(@window)
 
-    @render_fac = System::RendererFactory.new
+    @render_fac = Wankel::RendererFactory.new
     @render_fac.register(Colony::Ant, tex_renderer)
     @render_fac.register(Colony::Block, tex_renderer)
-    @render_fac.register(Colony::Particle, fill)
+    @render_fac.register(Wankel::Particle, fill)
     @render_fac.register(Colony::Ui::BlockSelector, outline)
     @render_fac.register(Colony::Ui::WorkTracker, fill)
     @render_fac.register(Colony::Ui::WorkCountTracker, text)
@@ -78,9 +59,9 @@ class Game
   end
 
   def init
-    @block_repo = System::ObjectRepository.new
-    @ant_repo = System::ObjectRepository.new
-    @particles = Colony::ParticleSystem.new
+    @block_repo = Wankel::ObjectRepository.new
+    @ant_repo = Wankel::ObjectRepository.new
+    @particles = Wankel::ParticleSystem.new
 
     block_factory = Colony::BlockFactory.new(@media)
     level = Colony::Level.new(block_factory, @block_repo, @window)
@@ -89,7 +70,7 @@ class Game
     ant_fac = Colony::AntFactory.new(ant_state_factory, @media, @events)
     job_factory = Colony::JobFactory.new(@events)
 
-    @ui = Ui::UiManager.new(@input)
+    @ui = Wankel::Ui::UiManager.new(@input)
     @ui << Colony::Ui::BlockSelector.new(level, work_manager, job_factory, @input)
     @ui << Colony::Ui::WorkTracker.new(work_manager, level)
     @ui << Colony::Ui::WorkCountTracker.new(work_manager)
@@ -144,12 +125,12 @@ class Game
     @ui.all.each { |u| u.draw(@render_fac) }
     @uid = (Gosu::milliseconds - time2) * 0.001
 
-    @font.draw_text("FPS: #{@fps}", 10, @window.height - 20, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Objects update: #{@oup}", 10, @window.height - 100, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Ui update: #{@uiup}", 10, @window.height - 80, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Objects draw: #{@od}", 10, @window.height - 60, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Ui draw: #{@uid}", 10, @window.height - 40, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Objects: #{@ant_repo.all.length + @block_repo.all.length}", 100, @window.height - 16, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
+    @font.draw_text("FPS: #{@fps}", 10, @window.height - 20, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Objects update: #{@oup}", 10, @window.height - 100, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Ui update: #{@uiup}", 10, @window.height - 80, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Objects draw: #{@od}", 10, @window.height - 60, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Ui draw: #{@uid}", 10, @window.height - 40, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Objects: #{@ant_repo.all.length + @block_repo.all.length}", 100, @window.height - 16, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
   end
 
   def show

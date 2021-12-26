@@ -1,19 +1,14 @@
-require 'gosu'
-
-require_relative '../../ui/ui_object'
-
 module Colony
 
   module Ui
 
-    class WorkTracker < ::Ui::UiObject
+    class WorkTracker < Wankel::Ui::UiObject
 
       COLOR_REACHABLE = Gosu::Color.new(64, 0, 255, 0)
       COLOR_BLOCKED = Gosu::Color.new(64, 255, 0, 0)
 
       def initialize(work_manager, level)
-        super()
-        @width = @height = Block::SIZE
+        super(Block::SIZE, Block::SIZE)
         @work_manager = work_manager
         @level = level
       end

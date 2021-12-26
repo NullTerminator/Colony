@@ -1,5 +1,3 @@
-require_relative '../../ui/ui_object'
-
 require_relative '../objects/block'
 require_relative '../events'
 
@@ -7,14 +5,13 @@ module Colony
 
   module Ui
 
-    class BlockSelector < ::Ui::UiObject
+    class BlockSelector < Wankel::Ui::UiObject
 
       MODE_DIG = :dig
       MODE_FILL = :fill
 
       def initialize(level, work_manager, job_factory, input)
-        super()
-        @width = @height = Block::SIZE
+        super(Block::SIZE, Block::SIZE)
         @color = Gosu::Color::WHITE
 
         @mode = MODE_DIG

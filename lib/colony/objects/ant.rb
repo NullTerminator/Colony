@@ -1,15 +1,10 @@
-require 'gosu'
-
-require_relative '../../objects/zorder'
-require_relative '../../objects/movable'
-
 require_relative 'entity'
 require_relative 'attacker'
 require_relative 'healer'
 
 module Colony
 
-  class Ant < Movable
+  class Ant < Wankel::Movable
 
     include Entity
     include Attacker
@@ -18,8 +13,7 @@ module Colony
     attr_reader :state
 
     def initialize
-      super(ZOrder::PLAYER)
-      @width = @height = 17.0
+      super(17.0, 17.0, Wankel::ZOrder::PLAYER)
       @color = Gosu::Color::WHITE
     end
 

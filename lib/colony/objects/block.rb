@@ -1,14 +1,9 @@
-require 'gosu'
-
-require_relative '../../objects/zorder'
-require_relative '../../objects/render_object'
-
 require_relative 'attackable'
 require_relative '../events'
 
 module Colony
 
-  class Block < RenderObject
+  class Block < Wankel::RenderObject
 
     include Attackable
 
@@ -21,8 +16,7 @@ module Colony
     alias :walkable? :walkable
 
     def initialize
-      super(ZOrder::LEVEL)
-      @width = @height = SIZE
+      super(SIZE, SIZE, Wankel::ZOrder::LEVEL)
 
       @max_health = 10
     end

@@ -1,10 +1,9 @@
-require_relative '../system/object_factory'
 require_relative 'events'
 require_relative 'objects/block'
 
 module Colony
 
-  class BlockFactory < System::ObjectFactory
+  class BlockFactory < Wankel::ObjectFactory
 
     def initialize(media)
       super(Block)

@@ -1,19 +1,6 @@
-#require 'gosu'
-
-require_relative "../window"
-require_relative "../system/media_manager"
-require_relative "../system/event_manager"
-require_relative "../system/input"
-require_relative "../system/renderer_factory"
-require_relative "../system/fill_renderer"
-require_relative "../system/font_renderer"
-require_relative "../system/outline_renderer"
-require_relative "../system/texture_renderer"
-require_relative "../ui/ui_manager"
 require_relative "ui/overseer_cursor"
 require_relative "ui/overseer_ant_cards"
 require_relative 'overseer_network'
-require_relative "../objects/zorder"
 
 class Overseer
 
@@ -28,26 +15,25 @@ class Overseer
     @frame_time = 0.0
     @fps = 0
 
-    @window = System::Window.new(self)
-    @window.caption = "OVERSEER"
-    @media = System::MediaManager.new
-    @events = System::EventManager.new
-    @input = System::Input.new(@window)
+    @window = Wankel::Window.new('OVERSEER', self, needs_cursor: false)
+    @media = Wankel::MediaManager.new
+    @events = Wankel::EventManager.new
+    @input = Wankel::Input.new(@window)
     @font = @media.font(:default)
 
-    outline = System::OutlineRenderer.new(@window)
-    fill = System::FillRenderer.new(@window)
-    text = System::FontRenderer.new(@font)
-    tex_renderer = System::TextureRenderer.new(@window)
+    outline = Wankel::OutlineRenderer.new(@window)
+    fill = Wankel::FillRenderer.new(@window)
+    text = Wankel::FontRenderer.new(@font)
+    tex_renderer = Wankel::TextureRenderer.new(@window)
 
-    @render_fac = System::RendererFactory.new
+    @render_fac = Wankel::RendererFactory.new
     @render_fac.register(Colony::Ui::OverseerCursor, tex_renderer)
 
     @input.register(:kb_escape, self)
   end
 
   def init
-    @ui = Ui::UiManager.new(@input)
+    @ui = Wankel::Ui::UiManager.new(@input)
     @ui << Colony::Ui::OverseerCursor.new(@input, @media)
     cards = Colony::Ui::OverseerAntCards.new(@input, @media, @window, @font)
     @ui << cards
@@ -78,14 +64,14 @@ class Overseer
     @ui.all.each { |u| u.draw(@render_fac) }
     @uid = (Gosu::milliseconds - time2) * 0.001
 
-    @font.draw_text('OVERSEER', @window.width * 0.5 - 90, 10, ZOrder::UI, 2.0, 2.0, 0xffffff00)
+    @font.draw_text('OVERSEER', @window.width * 0.5 - 90, 10, Wankel::ZOrder::UI, 2.0, 2.0, 0xffffff00)
 
-    @font.draw_text("FPS: #{@fps}", 10, @window.height - 20, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Objects update: #{@oup}", 10, @window.height - 100, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Ui update: #{@uiup}", 10, @window.height - 80, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Objects draw: #{@od}", 10, @window.height - 60, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Ui draw: #{@uid}", 10, @window.height - 40, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Objects: #{@ant_repo.all.length + @block_repo.all.length}", 100, @window.height - 16, ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
+    @font.draw_text("FPS: #{@fps}", 10, @window.height - 20, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Objects update: #{@oup}", 10, @window.height - 100, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Ui update: #{@uiup}", 10, @window.height - 80, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Objects draw: #{@od}", 10, @window.height - 60, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Ui draw: #{@uid}", 10, @window.height - 40, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
+    @font.draw_text("Objects: #{@ant_repo.all.length + @block_repo.all.length}", 100, @window.height - 16, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
   end
 
   def show

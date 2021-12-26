@@ -1,12 +1,10 @@
-require_relative '../../ui/ui_object'
-
 module Colony
   module Ui
-    class Cursor < ::Ui::UiObject
+    class Cursor < Wankel::Ui::UiObject
 
       def initialize(input, level, media)
-        super()
-        @width = @height = Block::SIZE * 1.35
+        size = Block::SIZE * 1.35
+        super(size, size)
         @input = input
         @level = level
         @color = Gosu::Color::WHITE

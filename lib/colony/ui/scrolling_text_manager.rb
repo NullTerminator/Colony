@@ -2,10 +2,9 @@ module Colony
 
   module Ui
 
-    class ScrollingTextManager < ::Ui::UiObject
+    class ScrollingTextManager < Wankel::Ui::UiObject
       def initialize
-        super()
-        @width = @height = 1
+        super(1, 1)
 
         @texts = []
       end

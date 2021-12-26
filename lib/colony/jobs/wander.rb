@@ -1,4 +1,3 @@
-require_relative '../../timer'
 require_relative '../ant_state'
 
 module Colony
@@ -15,7 +14,7 @@ module Colony
       @work_manager = work_manager
       @state_factory = state_factory
 
-      @lfw_timer = Timer.new(LFW_PERIOD) { look_for_work }
+      @lfw_timer = Wankel::Timer.new(LFW_PERIOD) { look_for_work }
     end
 
     def update(delta)

@@ -1,4 +1,3 @@
-require_relative '../../timer'
 require_relative '../ant_state'
 require_relative '../events'
 
@@ -15,7 +14,7 @@ module Colony
     end
 
     def enter
-      @dig_timer = Timer.new(ant.attack_time) { attack_target }
+      @dig_timer = Wankel::Timer.new(ant.attack_time) { attack_target }
       eventer.register(Events::Blocks::DUG, self)
       eventer.register(Events::Work::REMOVED, self)
 

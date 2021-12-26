@@ -1,13 +1,12 @@
-require_relative '../../ui/ui_object'
 require_relative '../objects/block'
 
 module Colony
   module Ui
-    class OverseerCursor < ::Ui::UiObject
+    class OverseerCursor < Wankel::Ui::UiObject
 
       def initialize(input, media)
-        super()
-        @width = @height = Block::SIZE * 1.35
+        size = Block::SIZE * 1.35
+        super(size, size)
         @input = input
         @color = Gosu::Color::WHITE
 

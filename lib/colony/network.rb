@@ -1,4 +1,8 @@
-require 'pub_sub'
+begin
+  require 'pub_sub'
+rescue LoadError
+end
+
 require 'json'
 
 require_relative 'events'
@@ -9,7 +13,7 @@ module Colony
     CHANNEL = :colony
 
     def self.init(eventer)
-      @pub_sub = PubSub.new
+      @pub_sub = PubSub.new if defined?(PubSub)
 
       [Events::Ants::SPAWNED].each do |e|
         eventer.register(e, self)
@@ -24,7 +28,7 @@ module Colony
     private
 
     def self.publish(data)
-      @pub_sub.publish(CHANNEL, data.to_json)
+      @pub_sub&.publish(CHANNEL, data.to_json)
     end
 
     class AntSerializer

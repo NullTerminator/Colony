@@ -4,6 +4,12 @@ PATH
     pub_sub (0.0.1)
       redis
 
+PATH
+  remote: ../wankel
+  specs:
+    wankel (0.1.0)
+      gosu (~> 1.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -12,7 +18,7 @@ GEM
     diff-lcs (1.3)
     ffi (1.10.0)
     formatador (0.2.5)
-    gosu (0.14.5)
+    gosu (1.2.0)
     guard (2.15.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -46,7 +52,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
-    redis (4.1.3)
+    redis (4.5.1)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -72,6 +78,8 @@ DEPENDENCIES
   guard-rspec
   pry-byebug
   pub_sub!
+  rspec
+  wankel!
 
 BUNDLED WITH
    2.1.4

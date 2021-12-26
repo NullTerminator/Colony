@@ -1,9 +1,8 @@
-require_relative '../system/caching_factory'
 require_relative 'events'
 
 module Colony
 
-  class AntFactory < System::CachingFactory
+  class AntFactory < Wankel::CachingFactory
 
     def initialize(state_factory, media, eventer)
       super(Ant)

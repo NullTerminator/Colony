@@ -1,18 +1,13 @@
-require 'gosu'
-
-require_relative '../../ui/ui_object'
-
 module Colony
 
   module Ui
 
-    class WorkCountTracker < ::Ui::UiObject
+    class WorkCountTracker < Wankel::Ui::UiObject
 
       attr_reader :text
 
       def initialize(work_manager)
-        super()
-        @width = @height = 1
+        super(1, 1)
         @work_manager = work_manager
         @color = Gosu::Color::WHITE
         @x = 10
