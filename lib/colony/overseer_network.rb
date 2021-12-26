@@ -12,10 +12,12 @@ module Colony
         d = JSON.parse(data)
         event = d['event'].to_sym
         case event
-        when :ant_spawned
+        when Events::Network::ANT
           ant_repo.add(d)
         end
       end
+
+      pub_sub.publish(CHANNEL, { event: :sync }.to_json)
     end
 
   end

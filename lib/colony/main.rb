@@ -82,7 +82,7 @@ class Game
 
     Colony::UseCases.init(@events, @input, level, work_manager, job_factory, scrolling_text_manager, @particles)
     Colony::SoundEffectsManager.init(@events, @media)
-    Colony::Network.init(@events)
+    Colony::Network.init(@events, @ant_repo)
 
     17.times do
       a = ant_fac.build

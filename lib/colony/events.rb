@@ -17,6 +17,10 @@ module Colony
       FILL_END = :ant_fill_end
     end
 
+    module Network
+      ANT = :ant
+    end
+
     module Work
       ADDED = :work_added
       REMOVED = :work_removed
