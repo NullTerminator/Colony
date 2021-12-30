@@ -17,6 +17,7 @@ module Colony
       m.load_image(:ant, 'red_ant.png')
       m.load_image(:dirt, 'dirt.png', tileable: true)
       m.load_image(:grass, 'grass.png')
+      m.load_image(:stone, 'stone.jpg')
       m.load_image(:cursor_shovel, 'shovel.png')
       m.load_image(:cursor_arrow, 'cursor_arrow.png')
     end

@@ -30,7 +30,7 @@ module Colony
         been_there[spot] = true
 
         @level.neighbors(spot).each do |block|
-          next unless block.is_tunnel? || block.is_grass? || block == @job.block
+          next unless block.walkable? || block == @job.block
           next if been_there[block]
 
           new_cost = cost_so_far + 1

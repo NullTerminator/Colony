@@ -19,6 +19,14 @@ module Colony
       block
     end
 
+    def stone
+      block = build
+      block.texture = @media.image(:stone)
+      block.stone
+
+      block
+    end
+
     def grass
       block = build
       block.texture = @media.image(:grass)

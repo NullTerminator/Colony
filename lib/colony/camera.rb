@@ -3,6 +3,7 @@ module Colony
     def initialize(input, eventer, width:, height:)
       super(width, height)
       @speed = 550.0
+      @y_limit = height * -0.8
 
       @eventer = eventer
 
@@ -23,6 +24,10 @@ module Colony
       @eventer.trigger(Events::Camera::MOVE, x, y) if @vel_x != 0.0 || @vel_y != 0.0
 
       # Enforce boundaries
+      if y < @y_limit
+        @y = @y_limit
+      end
+
     end
 
     def on_kb_w(down)

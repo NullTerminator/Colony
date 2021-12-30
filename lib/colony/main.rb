@@ -76,21 +76,20 @@ class Game
   def init
     @camera.x = 0.0
     @camera.y = 0.0
-    @block_repo = Wankel::ObjectRepository.new
     @ant_repo = Wankel::ObjectRepository.new
     @particles = Wankel::ParticleSystem.new
 
     block_factory = Colony::BlockFactory.new(@media)
-    level = Colony::Level.new(block_factory, @block_repo, @window, @camera)
-    work_manager = Colony::WorkManager.new(level, @eventer)
-    ant_state_factory = Colony::AntStateFactory.new(level, work_manager, @eventer)
+    @level = Colony::Level.new(block_factory, @camera)
+    work_manager = Colony::WorkManager.new(@level, @eventer)
+    ant_state_factory = Colony::AntStateFactory.new(@level, work_manager, @eventer)
     ant_fac = Colony::AntFactory.new(ant_state_factory, @media, @eventer)
     job_factory = Colony::JobFactory.new(@eventer)
 
     @ui = Wankel::Ui::UiManager.new(@input)
     panel = Colony::Ui::BottomPanel.new
-    @ui << Colony::Ui::BlockSelector.new(level, work_manager, job_factory, @input, @eventer)
-    @ui << Colony::Ui::WorkTracker.new(work_manager, level)
+    @ui << Colony::Ui::BlockSelector.new(@level, work_manager, job_factory, @input, @eventer)
+    @ui << Colony::Ui::WorkTracker.new(work_manager, @level)
     @ui << panel
     panel << Colony::Ui::WorkCountTracker.new(work_manager)
     panel << Colony::Ui::AntsCountTracker.new(@eventer)
@@ -99,14 +98,14 @@ class Game
     @ui << scrolling_text_manager
     @ui << Colony::Ui::Cursor.new(@input, panel, @media)
 
-    Colony::UseCases.init(@eventer, @input, level, work_manager, job_factory, scrolling_text_manager, @particles, @block_repo)
+    Colony::UseCases.init(@eventer, @input, @level, work_manager, job_factory, scrolling_text_manager, @particles)
     Colony::SoundEffectsManager.init(@eventer, @media)
     Colony::Network.init(@eventer, @ant_repo)
 
-    17.times do
+    7.times do
       a = ant_fac.build
-      a.x = rand(0.0..1400.0)
-      block = level.get_block_at(a.x, 11)
+      a.x = rand((@window.width * 0.5 - 100.0)..(@window.width * 0.5 + 100.0))
+      block = @level.get_block_at(a.x, 11)
       a.y = block.top
       @ant_repo.add(a)
     end
@@ -123,11 +122,11 @@ class Game
     calc_fps(delta) if @show_fps
 
     @input.update(delta)
-    @block_repo.all.each { |obj| obj.update(delta) }
+    @camera.update(delta)
+
+    @level.update(delta)
     @ant_repo.all.each { |obj| obj.update(@paused ? 0.0 : delta) }
     @particles.update(delta)
-
-    @camera.update(delta)
 
     time2 = Gosu::milliseconds
     @oup = (time2 - time) * 0.001
@@ -137,7 +136,7 @@ class Game
 
   def draw
     time = Gosu::milliseconds
-    @block_repo.all.each { |b| b.draw(@render_fac) }
+    @level.draw(@render_fac)
     @ant_repo.all.each { |a| a.draw(@render_fac) }
     @particles.draw(@render_fac)
 
@@ -154,7 +153,7 @@ class Game
     @font.draw_text("Ui update: #{@uiup}", 10, @window.height - 80, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
     @font.draw_text("Objects draw: #{@od}", 10, @window.height - 60, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
     @font.draw_text("Ui draw: #{@uid}", 10, @window.height - 40, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
-    @font.draw_text("Objects: #{@ant_repo.all.length + @block_repo.all.length}", 100, @window.height - 16, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
+    @font.draw_text("Objects: #{@ant_repo.all.length + @level.block_count}", 100, @window.height - 16, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_objects
   end
 
   def show

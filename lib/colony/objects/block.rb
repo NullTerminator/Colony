@@ -40,6 +40,16 @@ module Colony
       @color = Gosu::Color::WHITE
     end
 
+    def stone
+      @digable = false
+      @fillable = false
+      @walkable = false
+      @type = :stone
+      @max_health = 100
+      regenerate
+      @color = Gosu::Color::WHITE
+    end
+
     def excavate
       @digable = false
       @fillable = true
@@ -57,16 +67,8 @@ module Colony
       @type == :grass
     end
 
-    def is_dirt?
-      @type == :dirt
-    end
-
-    def is_tunnel?
-      @type == :tunnel
-    end
-
     def to_s
-      "Block: #{x.to_i}:#{y.to_i}"
+      "#{@type}: #{x.to_i}:#{y.to_i}"
     end
 
     def inspect

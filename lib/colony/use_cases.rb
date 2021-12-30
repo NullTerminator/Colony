@@ -4,14 +4,13 @@ module Colony
 
   class UseCases
 
-    def self.init(eventer, input, level, work_manager, job_factory, scrolling_text_manager, particles, block_repo)
+    def self.init(eventer, input, level, work_manager, job_factory, scrolling_text_manager, particles)
       @level = level
       @work_manager = work_manager
       @job_factory = job_factory
       @scrolling_text_manager = scrolling_text_manager
       @particles = particles
       @eventer = eventer
-      @block_repo = block_repo
 
       input.register(:kb_c, self)
 
@@ -45,8 +44,8 @@ module Colony
       @particles.start_effect(ant.front_x, ant.front_y, ant.angle - 180.0, 1.5, 0xff654321, 19.0, 15, 0.7)
     end
 
-    def self.on_camera_mouse_left(down, mx, my)
-      if block = @block_repo.all.find { |a| a.hit?(mx, my) }
+    def self.on_camera_mouse_left(down, x, y)
+      if block = @level.get_block_at(x, y)
         @eventer.trigger(Events::Blocks::CLICKED, block, down)
       end
     end
