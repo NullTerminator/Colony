@@ -4,9 +4,10 @@ require_relative 'block_factory'
 require_relative 'camera'
 require_relative 'jobs/job_factory'
 require_relative 'level'
+require_relative 'media'
+require_relative 'network'
 require_relative 'sound_effects_manager'
 require_relative 'use_cases'
-require_relative 'network'
 require_relative 'work_manager'
 require_relative 'objects/ant'
 require_relative 'objects/block'
@@ -36,9 +37,10 @@ class Game
     @fps = 0
 
     @window = Wankel::Window.new('THE COLONY', self, width: WIDTH, height: HEIGHT, needs_cursor: false)
-    @media = Wankel::MediaManager.new
     @eventer = Wankel::EventManager.new
     @input = Wankel::Input.new(@window)
+
+    @media = Colony::Media.init
     @font = @media.font(:default)
 
     @camera = Colony::Camera.new(@input, @eventer, width: WIDTH, height: HEIGHT * 0.8335)
@@ -109,7 +111,7 @@ class Game
       @ant_repo.add(a)
     end
 
-    @song = @media.music(:giant)
+    @song = @media.music(:background)
     @song.play(true)
   end
 
