@@ -2,10 +2,6 @@ module Colony
 
   module Events
 
-    module Ui
-      BLOCK_SELECTED = :block_selected
-    end
-
     module Ants
       SPAWNED = :ant_spawned
       KILLED = :ant_killed
@@ -30,6 +26,15 @@ module Colony
       DUG = :block_dug
       FILLED = :block_filled
       ATTACKED = :block_attacked
+
+      CLICKED = :block_clicked
+    end
+
+    module Camera
+      MOVE = :camera_move
+      MOUSE_MOVE = :camera_mouse_move
+      MOUSE_LEFT = :camera_mouse_left
+      MOUSE_RIGHT = :camera_mouse_right
     end
 
   end

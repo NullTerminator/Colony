@@ -2,11 +2,11 @@ module Colony
   module Ui
     class Cursor < Wankel::Ui::UiObject
 
-      def initialize(input, level, media)
+      def initialize(input, ui, media)
         size = Block::SIZE * 1.35
         super(size, size)
         @input = input
-        @level = level
+        @ui = ui
         @color = Gosu::Color::WHITE
 
         @shovel = media.image(:cursor_shovel)
@@ -22,7 +22,7 @@ module Colony
       end
 
       def texture
-        @level.get_block_at(x, y) ? @shovel : @arrow
+        @ui.hit?(x, y) ? @arrow : @shovel
       end
 
       def x_offset

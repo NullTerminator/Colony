@@ -46,7 +46,7 @@ module Colony
       @walkable = true
       @type = :tunnel
       @health = 0
-      @color = Gosu::Color.new(0x00_000000)
+      @color = Gosu::Color::BLACK
     end
 
     def workable?
@@ -70,7 +70,7 @@ module Colony
     end
 
     def inspect
-      "Block: #{x.to_i}:#{y.to_i}"
+      to_s
     end
 
   end

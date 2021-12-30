@@ -6,29 +6,23 @@ module Colony
 
   class Level
 
-    ROWS = (1000 / Block::SIZE).to_i
-    COLS = (1500 / Block::SIZE).to_i
-    WIDTH = (COLS * Block::SIZE).to_f
-    HEIGHT = (ROWS * Block::SIZE).to_f
-
-    attr_reader :left, :right,
-      :top, :bottom,
-      :width, :height
-
-    def initialize(block_factory, block_repo, window)
-      @width = WIDTH
-      @height = HEIGHT
+    def initialize(block_factory, block_repo, window, camera)
       @block_factory = block_factory
       @block_repo = block_repo
       @window = window
+      @camera = camera
 
       init_blocks
     end
 
     def get_block_at(x, y)
-      if hit?(x, y)
-        return @blocks[get_row(y)][get_column(x)]
+      if row = @blocks[get_row(y)]
+        row[get_column(x)]
       end
+    end
+
+    def get_block_at_screen(x, y)
+      get_block_at(x + @camera.x, y + @camera.y)
     end
 
     def is_reachable?(block)
@@ -39,11 +33,11 @@ module Colony
       row = get_row(block.y)
       col = get_column(block.x)
       n = []
-      n << @blocks[row - 1][col] if row > 0
-      n << @blocks[row + 1][col] if row < (ROWS - 1)
-      n << @blocks[row][col - 1] if col > 0
-      n << @blocks[row][col + 1] if col < (COLS - 1)
-      n
+      n << @blocks[row - 1][col]
+      n << @blocks[row + 1][col]
+      n << @blocks[row][col - 1]
+      n << @blocks[row][col + 1]
+      n.compact
     end
 
     def get_blocks_in_rect(start_block, end_block)
@@ -65,16 +59,12 @@ module Colony
       blocks
     end
 
-    def hit?(posx, posy)
-      posx >= left && posx <= right && posy >= top && posy <= bottom
-    end
-
     def get_column(x)
-      ((x - left) / Block::SIZE).to_i
+      (x / Block::SIZE).to_i
     end
 
     def get_row(y)
-      ((y - top) / Block::SIZE).to_i
+      (y / Block::SIZE).to_i
     end
 
     private
@@ -82,28 +72,19 @@ module Colony
     def init_blocks
       @blocks = []
 
-      @left = (@window.width * 0.5) - (WIDTH * 0.5)
-      @right = left + WIDTH
-      @top = 10.0
-      @bottom = top + HEIGHT
-
-      ROWS.times do |row_i|
+      45.times do |row_i|
         row = []
 
-        COLS.times do |col_i|
-          block_left = left + (col_i * Block::SIZE)
-          block_bottom = top + (row_i * Block::SIZE) + Block::SIZE
-
-          block = if col_i == 40
+        60.times do |col_i|
+          block = if col_i == 40 && row_i < 7
                     @block_factory.tunnel
                   elsif row_i == 0
                     @block_factory.grass
                   else
                     @block_factory.dirt
                   end
-          block.left = block_left
-          block.bottom = block_bottom
-
+          block.left = col_i * Block::SIZE
+          block.bottom = (row_i * Block::SIZE) + Block::SIZE
 
           @block_repo << block
           row << block

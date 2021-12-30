@@ -10,7 +10,7 @@ module Colony
         super(1, 1)
         @color = Gosu::Color::WHITE
         @x = 10
-        @y = 50
+        @y = 950
 
         @dug_count = 0
 

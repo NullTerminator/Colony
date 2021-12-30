@@ -10,7 +10,7 @@ module Colony
         super(1, 1)
         @color = Gosu::Color::WHITE
         @x = 10
-        @y = 10
+        @y = 910
 
         @ants_count = 0
 
