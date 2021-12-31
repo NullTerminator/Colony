@@ -11,7 +11,7 @@ module Colony
         @work_manager = work_manager
         @color = Gosu::Color::WHITE
         @x = 10
-        @y = 930
+        @y = 30
       end
 
       def update(delta)

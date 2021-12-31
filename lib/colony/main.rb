@@ -11,6 +11,7 @@ require_relative 'use_cases'
 require_relative 'work_manager'
 require_relative 'objects/ant'
 require_relative 'objects/block'
+require_relative 'ui/ant_count_renderer'
 require_relative 'ui/block_selector'
 require_relative 'ui/bottom_panel'
 require_relative 'ui/work_tracker'
@@ -61,13 +62,13 @@ class Game
     @render_fac.register(Colony::Ui::WorkTracker, fill_cam)
     @render_fac.register(Colony::Ui::ScrollingTextManager, text_cam)
 
-    text = Wankel::FontRenderer.new(@font)
+    font = Wankel::FontRenderer.new(@font)
     tex_renderer = Wankel::TextureRenderer.new(@window)
     fill = Wankel::FillRenderer.new(@window)
     @render_fac.register(Colony::Ui::Cursor, tex_renderer)
-    @render_fac.register(Colony::Ui::AntsCountTracker, text)
-    @render_fac.register(Colony::Ui::WorkCountTracker, text)
-    @render_fac.register(Colony::Ui::DugCountTracker, text)
+    @render_fac.register(Colony::Ui::AntsCountTracker, Colony::Ui::AntCountRenderer.new(tex_renderer, font))
+    @render_fac.register(Colony::Ui::WorkCountTracker, font)
+    @render_fac.register(Colony::Ui::DugCountTracker, font)
     @render_fac.register(Colony::Ui::BottomPanel, fill)
 
     @input.register(:kb_escape, self)
@@ -95,7 +96,7 @@ class Game
     panel = Colony::Ui::BottomPanel.new(WIDTH * 0.5, CAM_HEIGHT + (HEIGHT - CAM_HEIGHT) * 0.5, WIDTH, HEIGHT - CAM_HEIGHT)
     @ui << panel
     panel << Colony::Ui::WorkCountTracker.new(work_manager)
-    panel << Colony::Ui::AntsCountTracker.new(@eventer)
+    panel << Colony::Ui::AntsCountTracker.new(@eventer, @media)
     panel << Colony::Ui::DugCountTracker.new(@eventer)
 
     scrolling_text_manager = Colony::Ui::ScrollingTextManager.new

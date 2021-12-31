@@ -6,6 +6,8 @@ module Colony
 
   class Ant < Wankel::Movable
 
+    SIZE = 17.0
+
     include Entity
     include Attacker
     include Healer
@@ -13,16 +15,9 @@ module Colony
     attr_reader :state
 
     def initialize
-      super(17.0, 17.0, Wankel::ZOrder::PLAYER)
+      super(SIZE, SIZE, Wankel::ZOrder::PLAYER)
       @color = Gosu::Color::WHITE
     end
-
-    #def init
-      #super
-      #@speed = rand(30.0..50.0)
-      #@damage = rand(1..2)
-      #@attack_time = rand(1.0..1.3)
-    #end
 
     def state=(new_state)
       state.exit if state

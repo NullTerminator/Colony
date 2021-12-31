@@ -6,11 +6,12 @@ module Colony
 
       attr_reader :text
 
-      def initialize(eventer)
-        super(1, 1)
+      def initialize(eventer, media)
+        super(30, 30)
         @color = Gosu::Color::WHITE
-        @x = 10
-        @y = 910
+        @x = 30
+        @y = 10
+        @texture = media.image(:ant)
 
         @ants_count = 0
 
@@ -32,7 +33,7 @@ module Colony
       private
 
       def set_text
-        @text = "ANTS: #{@ants_count}"
+        @text = ": #{@ants_count}"
       end
 
     end

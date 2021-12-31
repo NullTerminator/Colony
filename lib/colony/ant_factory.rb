@@ -11,6 +11,7 @@ module Colony
       @eventer = eventer
       @media = media
       @next_id = 1
+      @eventer.register(Events::Ants::KILLED, lambda { |event_ant| free(event_ant) })
     end
 
     def build

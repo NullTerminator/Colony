@@ -10,21 +10,22 @@ module Colony
         super(1, 1)
         @color = Gosu::Color::WHITE
         @x = 10
-        @y = 950
+        @y = 50
 
         @dug_count = 0
 
         eventer.register(Events::Blocks::DUG, self)
       end
 
-      def update(delta)
-        super
-
-        @text = "BLOCKS DUG: #{@dug_count}"
-      end
-
       def on_block_dug(block)
         @dug_count += 1
+        set_text
+      end
+
+      private
+
+      def set_text
+        @text = "BLOCKS DUG: #{@dug_count}"
       end
 
     end

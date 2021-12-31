@@ -57,11 +57,11 @@ module Colony
     def update(delta)
       ensure_chunks_in_cam
 
-      @chunks.each do |row|
-        row.values.each do |chunk|
-          chunk.update(delta)
-        end
-      end
+      #@chunks.each do |row|
+        #row.values.each do |chunk|
+          #chunk.update(delta)
+        #end
+      #end
     end
 
     def draw(renderer_fac)
