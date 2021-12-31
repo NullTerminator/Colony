@@ -1,13 +1,14 @@
 module Colony
   module Ui
-    class Cursor < Wankel::Ui::UiObject
+    class Cursor < Wankel::RenderObject
 
       def initialize(input, ui, media)
-        size = Block::SIZE * 1.35
-        super(size, size)
+        size = 35.0
+        super(size, size, Wankel::ZOrder::CURSOR)
+        @color = Gosu::Color::WHITE
+
         @input = input
         @ui = ui
-        @color = Gosu::Color::WHITE
 
         @shovel = media.image(:cursor_shovel)
         @arrow = media.image(:cursor_arrow)

@@ -89,16 +89,19 @@ class Game
     job_factory = Colony::JobFactory.new(@eventer)
 
     @ui = Wankel::Ui::UiManager.new(@input)
-    panel = Colony::Ui::BottomPanel.new(WIDTH * 0.5, CAM_HEIGHT + (HEIGHT - CAM_HEIGHT) * 0.5, WIDTH, HEIGHT - CAM_HEIGHT)
     @ui << Colony::Ui::BlockSelector.new(@level, work_manager, job_factory, @input, @eventer)
     @ui << Colony::Ui::WorkTracker.new(work_manager, @level)
+
+    panel = Colony::Ui::BottomPanel.new(WIDTH * 0.5, CAM_HEIGHT + (HEIGHT - CAM_HEIGHT) * 0.5, WIDTH, HEIGHT - CAM_HEIGHT)
     @ui << panel
     panel << Colony::Ui::WorkCountTracker.new(work_manager)
     panel << Colony::Ui::AntsCountTracker.new(@eventer)
     panel << Colony::Ui::DugCountTracker.new(@eventer)
+
     scrolling_text_manager = Colony::Ui::ScrollingTextManager.new
     @ui << scrolling_text_manager
-    @ui << Colony::Ui::Cursor.new(@input, panel, @media)
+
+    @cursor = Colony::Ui::Cursor.new(@input, panel, @media)
 
     Colony::UseCases.init(@eventer, @input, @level, work_manager, job_factory, scrolling_text_manager, @particles)
     Colony::SoundEffectsManager.init(@eventer, @media)
@@ -146,6 +149,8 @@ class Game
     @od = (time2 - time) * 0.001
     @ui.all.each { |u| u.draw(@render_fac) }
     @uid = (Gosu::milliseconds - time2) * 0.001
+
+    @cursor.draw(@render_fac)
 
     @font.draw_text("#{@camera.x.to_i} : #{@camera.y.to_i}", 10, 10, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @debug
     @font.draw_text("#{@window.mouse_x.to_i} : #{@window.mouse_y.to_i}", 10, 25, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @debug
