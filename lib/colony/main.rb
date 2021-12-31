@@ -25,6 +25,8 @@ class Game
   WIDTH = 1920
   HEIGHT = 1080
 
+  CAM_HEIGHT = HEIGHT * 0.8335
+
   attr_accessor :show_fps, :debug, :show_objects
 
   def initialize
@@ -43,7 +45,7 @@ class Game
     @media = Colony::Media.init
     @font = @media.font(:default)
 
-    @camera = Colony::Camera.new(@input, @eventer, width: WIDTH, height: HEIGHT * 0.8335)
+    @camera = Colony::Camera.new(@input, @eventer, width: WIDTH, height: CAM_HEIGHT)
 
     outline_cam = Wankel::OutlineRenderer.new(@window, @camera)
     fill_cam = Wankel::FillRenderer.new(@window, @camera)
@@ -87,7 +89,7 @@ class Game
     job_factory = Colony::JobFactory.new(@eventer)
 
     @ui = Wankel::Ui::UiManager.new(@input)
-    panel = Colony::Ui::BottomPanel.new
+    panel = Colony::Ui::BottomPanel.new(WIDTH * 0.5, CAM_HEIGHT + (HEIGHT - CAM_HEIGHT) * 0.5, WIDTH, HEIGHT - CAM_HEIGHT)
     @ui << Colony::Ui::BlockSelector.new(@level, work_manager, job_factory, @input, @eventer)
     @ui << Colony::Ui::WorkTracker.new(work_manager, @level)
     @ui << panel
@@ -147,6 +149,7 @@ class Game
 
     @font.draw_text("#{@camera.x.to_i} : #{@camera.y.to_i}", 10, 10, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @debug
     @font.draw_text("#{@window.mouse_x.to_i} : #{@window.mouse_y.to_i}", 10, 25, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @debug
+    @font.draw_text("#{@window.width} : #{@window.height}", 10, 40, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @debug
 
     @font.draw_text("FPS: #{@fps}", 10, @window.height - 20, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps
     @font.draw_text("Objects update: #{@oup}", 10, @window.height - 100, Wankel::ZOrder::UI, 1.0, 1.0, 0xffffff00) if @show_fps

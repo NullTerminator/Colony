@@ -29,6 +29,7 @@ module Colony
         eventer.register(Events::Camera::MOVE, self)
         eventer.register(Events::Camera::MOUSE_MOVE, self)
         eventer.register(Events::Camera::MOUSE_RIGHT, self)
+        eventer.register(Events::Camera::MOUSE_OUT, self)
       end
 
       def on_block_clicked(block, down)
@@ -43,20 +44,27 @@ module Colony
         @mouse_down = down
       end
 
-      def on_camera_mouse_move(mx, my, dx, dy)
-        find_block(mx, my)
+      def on_camera_mouse_move(cx, cy, dx, dy)
+        find_block(cx, cy)
       end
 
-      def on_camera_mouse_right(down, mx, my)
+      def on_camera_mouse_right(down, cx, cy)
         @batch = nil
         @batch_start = nil
         @block = nil
         @mouse_down = false
-        find_block(@input.mouse_x, @input.mouse_y)
+        find_block(cx, cy)
       end
 
       def on_camera_move(cx, cy)
-        find_block(@input.mouse_x, @input.mouse_y)
+        find_block(cx, cy)
+      end
+
+      def on_camera_mouse_out
+        @batch = nil
+        @batch_start = nil
+        @block = nil
+        @mouse_down = false
       end
 
       def draw(renderer_fac)
@@ -77,7 +85,7 @@ module Colony
       private
 
       def find_block(bx, by)
-        if block = @level.get_block_at_screen(bx, by)
+        if block = @level.get_block_at(bx, by)
           if block_is_good?(@block) && (block != @block) && mouse_down?
             if !@batch
               @batch_start = @block

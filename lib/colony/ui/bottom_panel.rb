@@ -3,8 +3,8 @@ module Colony
   module Ui
 
     class BottomPanel < Wankel::Ui::Container
-      def initialize
-        super(1920 * 0.5, 950, 1920, 180)
+      def initialize(x, y, width, height)
+        super
 
         @color = Gosu::Color::GRAY
       end

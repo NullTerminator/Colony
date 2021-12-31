@@ -21,7 +21,7 @@ module Colony
     def update(delta)
       super
 
-      @eventer.trigger(Events::Camera::MOVE, x, y) if @vel_x != 0.0 || @vel_y != 0.0
+      @eventer.trigger(Events::Camera::MOVE, x, y) unless @vel_x.zero? && @vel_y.zero?
 
       # Enforce boundaries
       if y < @y_limit
@@ -68,15 +68,29 @@ module Colony
     end
 
     def on_mouse_move(mx, my, dx, dy)
-      @eventer.trigger(Events::Camera::MOUSE_MOVE, mx, my, dx, dy)
+      game_x = mx + x
+      game_y = my + y
+      if hit?(game_x, game_y)
+        @eventer.trigger(Events::Camera::MOUSE_MOVE, game_x, game_y, dx, dy)
+      else
+        @eventer.trigger(Events::Camera::MOUSE_OUT)
+      end
     end
 
     def on_mouse_left(down, mx, my)
-      @eventer.trigger(Events::Camera::MOUSE_LEFT, down, mx + x, my + y)
+      game_x = mx + x
+      game_y = my + y
+      if hit?(game_x, game_y)
+        @eventer.trigger(Events::Camera::MOUSE_LEFT, down, game_x, game_y)
+      end
     end
 
     def on_mouse_right(down, mx, my)
-      @eventer.trigger(Events::Camera::MOUSE_RIGHT, down, mx + x, my + y)
+      game_x = mx + x
+      game_y = my + y
+      if hit?(game_x, game_y)
+        @eventer.trigger(Events::Camera::MOUSE_RIGHT, down, game_x, game_y)
+      end
     end
   end
 end

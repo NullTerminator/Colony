@@ -35,6 +35,7 @@ module Colony
       MOUSE_MOVE = :camera_mouse_move
       MOUSE_LEFT = :camera_mouse_left
       MOUSE_RIGHT = :camera_mouse_right
+      MOUSE_OUT = :camera_mouse_out
     end
 
   end
