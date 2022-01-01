@@ -8,16 +8,27 @@ module Colony
 
       def initialize(work_manager)
         super(1, 1)
-        @work_manager = work_manager
         @color = Gosu::Color::WHITE
         @x = 10
         @y = 30
+
+        @work_manager = work_manager
+        set_text
       end
 
       def update(delta)
         super
 
-        @text = "WORK QUEUE: #{@work_manager.count}"
+        set_text
+      end
+
+      private
+
+      def set_text
+        if @work_count != @work_manager.count
+          @work_count = @work_manager.count
+          @text = "WORK QUEUE: #{@work_manager.count}"
+        end
       end
 
     end

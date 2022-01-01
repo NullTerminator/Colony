@@ -13,6 +13,7 @@ module Colony
         @y = 50
 
         @dug_count = 0
+        set_text
 
         eventer.register(Events::Blocks::DUG, self)
       end
