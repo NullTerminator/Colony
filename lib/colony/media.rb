@@ -15,15 +15,17 @@ module Colony
 
     def self.load_images(m)
       m.load_image(:ant, 'red_ant.png')
+
       m.load_image(:dirt, 'dirt.png', tileable: true)
       m.load_image(:grass, 'grass.png')
-      m.load_image(:stone, 'stone.jpg')
-      m.load_image(:cursor_shovel, 'shovel.png')
+      m.load_image(:stone, 'stone.jpg', tileable: true)
+
+      m.load_image(:cursor_dig, 'shovel.png')
       m.load_image(:cursor_arrow, 'cursor_arrow.png')
+      m.load_image(:cursor_select, 'hand.png')
     end
 
     def self.load_sounds(m)
-      m.load_sound(:beep, 'Beep.wav')
       m.load_sound(:ant_walk, 'ant_walk_1.mp3')
       m.load_sound(:ant_dig, 'ant_dig.m4a')
       m.load_sound(:ant_fill, 'ant_fill.mp3')

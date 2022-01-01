@@ -11,10 +11,21 @@ module Colony
       DIG_END = :ant_dig_end
       FILL_START = :ant_fill_start
       FILL_END = :ant_fill_end
+
+      SELECTED = :ant_selected
+    end
+
+    module Selection
+      CLEAR = :selection_clear
+    end
+
+    module Dig
+      CLEAR = :dig_clear
+      MOUSE_MOVE = :dig_mouse_move
     end
 
     module Network
-      ANT = :ant
+      ANT = :network_ant
     end
 
     module Work

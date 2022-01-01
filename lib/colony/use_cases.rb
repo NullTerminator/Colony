@@ -18,8 +18,6 @@ module Colony
         Events::Blocks::DUG,
         Events::Blocks::FILLED,
         Events::Blocks::ATTACKED,
-
-        Events::Camera::MOUSE_LEFT
       ].each do |e|
         eventer.register(e, self)
       end
@@ -42,12 +40,6 @@ module Colony
     def self.on_block_attacked(ant, block, damage)
       @scrolling_text_manager.add(damage.to_s, block, Gosu::Color::RED)
       @particles.start_effect(ant.front_x, ant.front_y, ant.angle - 180.0, 1.5, 0xff654321, 19.0, 15, 0.7)
-    end
-
-    def self.on_camera_mouse_left(down, x, y)
-      if block = @level.get_block_at(x, y)
-        @eventer.trigger(Events::Blocks::CLICKED, block, down)
-      end
     end
 
   end

@@ -5,6 +5,7 @@ require_relative 'camera'
 require_relative 'jobs/job_factory'
 require_relative 'level'
 require_relative 'media'
+require_relative 'mouse_input'
 require_relative 'network'
 require_relative 'sound_effects_manager'
 require_relative 'use_cases'
@@ -18,6 +19,8 @@ require_relative 'ui/work_tracker'
 require_relative 'ui/work_count_tracker'
 require_relative 'ui/ants_count_tracker'
 require_relative 'ui/dug_count_tracker'
+require_relative 'ui/selection_tracker'
+require_relative 'ui/selection_tracker_renderer'
 require_relative 'ui/scrolling_text_manager'
 require_relative 'ui/cursor'
 
@@ -26,7 +29,7 @@ class Game
   WIDTH = 1920
   HEIGHT = 1080
 
-  CAM_HEIGHT = HEIGHT * 0.8335
+  CAM_HEIGHT = HEIGHT * 0.8
 
   attr_accessor :show_fps, :debug, :show_objects
 
@@ -69,6 +72,7 @@ class Game
     @render_fac.register(Colony::Ui::AntsCountTracker, Colony::Ui::AntCountRenderer.new(tex_renderer, font))
     @render_fac.register(Colony::Ui::WorkCountTracker, font)
     @render_fac.register(Colony::Ui::DugCountTracker, font)
+    @render_fac.register(Colony::Ui::SelectionTracker, Colony::Ui::SelectionTrackerRenderer.new(@window, @font))
     @render_fac.register(Colony::Ui::BottomPanel, fill)
 
     @input.register(:kb_escape, self)
@@ -89,20 +93,24 @@ class Game
     ant_fac = Colony::AntFactory.new(ant_state_factory, @media, @eventer)
     job_factory = Colony::JobFactory.new(@eventer)
 
+    @mouse_input = Colony::MouseInput.new(@eventer, @level, @ant_repo, @input)
+
     @ui = Wankel::Ui::UiManager.new(@input)
     @ui << Colony::Ui::BlockSelector.new(@level, work_manager, job_factory, @input, @eventer)
     @ui << Colony::Ui::WorkTracker.new(work_manager, @level)
 
-    panel = Colony::Ui::BottomPanel.new(WIDTH * 0.5, CAM_HEIGHT + (HEIGHT - CAM_HEIGHT) * 0.5, WIDTH, HEIGHT - CAM_HEIGHT)
+    panel_height = HEIGHT - CAM_HEIGHT
+    panel = Colony::Ui::BottomPanel.new(WIDTH * 0.5, CAM_HEIGHT + (HEIGHT - CAM_HEIGHT) * 0.5, WIDTH, panel_height)
     @ui << panel
     panel << Colony::Ui::WorkCountTracker.new(work_manager)
     panel << Colony::Ui::AntsCountTracker.new(@eventer, @media)
     panel << Colony::Ui::DugCountTracker.new(@eventer)
+    panel << Colony::Ui::SelectionTracker.new(WIDTH * 0.5, panel_height * 0.5, 300, panel_height - 20, @media, @eventer)
 
     scrolling_text_manager = Colony::Ui::ScrollingTextManager.new
     @ui << scrolling_text_manager
 
-    @cursor = Colony::Ui::Cursor.new(@input, panel, @media)
+    @cursor = Colony::Ui::Cursor.new(@input, panel, @media, @mouse_input)
 
     Colony::UseCases.init(@eventer, @input, @level, work_manager, job_factory, scrolling_text_manager, @particles)
     Colony::SoundEffectsManager.init(@eventer, @media)

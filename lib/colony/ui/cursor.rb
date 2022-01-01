@@ -2,16 +2,18 @@ module Colony
   module Ui
     class Cursor < Wankel::RenderObject
 
-      def initialize(input, ui, media)
+      def initialize(input, ui, media, mouse_input)
         size = 35.0
         super(size, size, Wankel::ZOrder::CURSOR)
         @color = Gosu::Color::WHITE
 
         @input = input
         @ui = ui
+        @mouse_input = mouse_input
 
-        @shovel = media.image(:cursor_shovel)
+        @dig = media.image(:cursor_dig)
         @arrow = media.image(:cursor_arrow)
+        @select = media.image(:cursor_select)
       end
 
       def x
@@ -23,15 +25,31 @@ module Colony
       end
 
       def texture
-        @ui.hit?(x, y) ? @arrow : @shovel
+        if @ui.hit?(x, y)
+          @arrow
+        else
+          case @mouse_input.mode
+          when MouseInput::SELECT
+            @select
+          when MouseInput::DIG
+            @dig
+          end
+        end
       end
 
       def x_offset
-        width * 0.5
+        texture == @select ? 0.0 : width * 0.5
       end
 
       def y_offset
-        texture == @shovel ? -height * 0.5 : height * 0.5
+        case texture
+        when @dig
+          -height * 0.5
+        when @select
+          height * 0.18
+        else
+          height * 0.5
+        end
       end
 
       def draw(renderer_fac)

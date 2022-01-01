@@ -22,14 +22,17 @@ module Colony
         @level = level
         @work_manager = work_manager
         @job_factory = job_factory
-        @input = input
 
-        @input.register(:kb_f, self)
+        input.register(:kb_f, self)
+
         eventer.register(Events::Blocks::CLICKED, self)
+
         eventer.register(Events::Camera::MOVE, self)
-        eventer.register(Events::Camera::MOUSE_MOVE, self)
-        eventer.register(Events::Camera::MOUSE_RIGHT, self)
+
+        eventer.register(Events::Dig::MOUSE_MOVE, self)
         eventer.register(Events::Camera::MOUSE_OUT, self)
+
+        eventer.register(Events::Dig::CLEAR, self)
       end
 
       def on_block_clicked(block, down)
@@ -44,16 +47,16 @@ module Colony
         @mouse_down = down
       end
 
-      def on_camera_mouse_move(cx, cy, dx, dy)
+      def on_dig_mouse_move(cx, cy, dx, dy)
         find_block(cx, cy)
       end
 
-      def on_camera_mouse_right(down, cx, cy)
+      def on_dig_clear(cx = nil, cy = nil)
         @batch = nil
         @batch_start = nil
         @block = nil
         @mouse_down = false
-        find_block(cx, cy)
+        find_block(cx, cy) if cx && cy
       end
 
       def on_camera_move(cx, cy)
