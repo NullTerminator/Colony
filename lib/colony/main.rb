@@ -12,6 +12,8 @@ require_relative 'use_cases'
 require_relative 'work_manager'
 require_relative 'objects/ant'
 require_relative 'objects/block'
+require_relative 'objects/sun'
+require_relative 'objects/moon'
 require_relative 'ui/ant_count_renderer'
 require_relative 'ui/block_selector'
 require_relative 'ui/bottom_panel'
@@ -60,6 +62,8 @@ class Game
 
     @render_fac.register(Colony::Ant, tex_renderer_cam)
     @render_fac.register(Colony::Block, tex_renderer_cam)
+    @render_fac.register(Colony::Sun, tex_renderer_cam)
+    @render_fac.register(Colony::Moon, tex_renderer_cam)
     @render_fac.register(Wankel::Particle, fill_cam)
     @render_fac.register(Colony::Ui::BlockSelector, outline_cam)
     @render_fac.register(Colony::Ui::WorkTracker, fill_cam)
@@ -82,7 +86,7 @@ class Game
 
   def init
     @camera.x = 0.0
-    @camera.y = 0.0
+    @camera.y = -500.0
     @ant_repo = Wankel::ObjectRepository.new
     @particles = Wankel::ParticleSystem.new
 
@@ -94,6 +98,9 @@ class Game
     job_factory = Colony::JobFactory.new(@eventer)
 
     @mouse_input = Colony::MouseInput.new(@eventer, @level, @ant_repo, @input)
+
+    @sun = Colony::Sun.new(@media)
+    @moon = Colony::Moon.new(@media)
 
     @ui = Wankel::Ui::UiManager.new(@input)
     @ui << Colony::Ui::BlockSelector.new(@level, work_manager, job_factory, @input, @eventer)
@@ -131,6 +138,7 @@ class Game
   def update
     time = Gosu::milliseconds
     delta = (time - @last_time) * 0.001
+    delta_with_pause = @paused ? 0.0 : delta
     @last_time = time
 
     calc_fps(delta) if @show_fps
@@ -138,9 +146,11 @@ class Game
     @input.update(delta)
     @camera.update(delta)
 
-    @level.update(delta)
-    @ant_repo.all.each { |obj| obj.update(@paused ? 0.0 : delta) }
-    @particles.update(delta)
+    @level.update(delta_with_pause)
+    @ant_repo.all.each { |obj| obj.update(delta_with_pause) }
+    @particles.update(delta_with_pause)
+    @sun.update(delta_with_pause)
+    @moon.update(delta_with_pause)
 
     time2 = Gosu::milliseconds
     @oup = (time2 - time) * 0.001
@@ -150,6 +160,8 @@ class Game
 
   def draw
     time = Gosu::milliseconds
+    @sun.draw(@render_fac)
+    @moon.draw(@render_fac)
     @level.draw(@render_fac)
     @ant_repo.all.each { |a| a.draw(@render_fac) }
     @particles.draw(@render_fac)

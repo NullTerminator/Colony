@@ -23,6 +23,9 @@ module Colony
       m.load_image(:cursor_dig, 'shovel.png')
       m.load_image(:cursor_arrow, 'cursor_arrow.png')
       m.load_image(:cursor_select, 'hand.png')
+
+      m.load_image(:sun, 'sun.png')
+      m.load_image(:moon, 'moon.png')
     end
 
     def self.load_sounds(m)
